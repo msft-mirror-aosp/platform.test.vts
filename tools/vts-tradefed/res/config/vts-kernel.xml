@@ -34,7 +34,7 @@
   <option name="compatibility:include-filter" value="VtsKernelLinuxKselftestPresubmit" />
   <option name="compatibility:include-filter" value="VtsKernelLinuxKselftest" />
   <option name="compatibility:include-filter" value="VtsKernelLtp" />
-  <option name="compatibility:include-filter" value="CtsOnGsiTrebleFrameworkVintfTest SystemVendorTest.KernelCompatibility"/>
+  <option name="compatibility:include-filter" value="VtsTrebleFrameworkVintfTest SystemVendorTest.KernelCompatibility"/>
   <option name="compatibility:include-filter" value="VtsKernelLiblpTest" />
   <option name="compatibility:include-filter" value="VtsKernelLibdmTest" />
   <option name="compatibility:include-filter" value="VtsKernelDynamicPartitionsTest" />
