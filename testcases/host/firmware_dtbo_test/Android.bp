@@ -25,8 +25,10 @@ java_test_host {
         "general-tests",
         "vts",
     ],
+    // (b/153848038), Change to ":mkdtboimg.py" after resolving.
     data: [
-        ":mkdtboimg.py",
+        ":mkdtboimg",
     ],
     target_required: ["ufdt_verify_overlay"],
+    required: ["mkdtboimg.py"],
 }
