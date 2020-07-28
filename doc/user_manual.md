@@ -19,11 +19,11 @@ During VTS test runs, required Python packages are downloaded from the [Python P
 
 * `$ . test/vts/script/download-pypi-packages.sh`
 
-### 1.2. Checkout master git repository
+### 1.2. Checkout main git repository
 
 [Download Android Source Code](https://source.android.com/source/downloading.html)
 
-`$ export branch=master`
+`$ export branch=main`
 
 `$ mkdir ${branch}`
 
