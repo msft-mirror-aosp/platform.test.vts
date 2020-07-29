@@ -13,14 +13,14 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<configuration description="Runs a subset of CTS tests for GSI sanity checking">
+<configuration description="Runs a subset of CTS tests for GSI validation">
 
     <include name="cts" />
     <option name="compatibility-build-provider:url-suite-name-override" value="CTS" />
     <option name="dynamic-config-pusher:dynamic-resource-name" value="vts10-tradefed" />
 
 
-    <option name="plan" value="cts-gsi-sanity" />
+    <option name="plan" value="cts-gsi-validation" />
 
     <!-- Include test modules -->
     <option name="compatibility:include-filter" value="CtsBionicCases" />
