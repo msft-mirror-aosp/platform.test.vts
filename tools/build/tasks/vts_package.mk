@@ -39,7 +39,7 @@ include $(build_utils_dir)/vts_package_utils.mk
 
 VTS10_OUT_ROOT := $(HOST_OUT)/vts10
 VTS10_TESTCASES_OUT := $(VTS10_OUT_ROOT)/android-vts10/testcases
-# TODO(b/151896491): Remove these 2 variable after internal master is updated.
+# TODO(b/151896491): Remove these 2 variable after internal main branch is updated.
 VTS_OUT_ROOT := $(VTS10_OUT_ROOT)
 VTS_TESTCASES_OUT := $(VTS10_TESTCASES_OUT)
 
