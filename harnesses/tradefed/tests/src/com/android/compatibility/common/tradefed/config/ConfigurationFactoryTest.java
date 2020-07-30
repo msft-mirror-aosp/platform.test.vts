@@ -37,7 +37,7 @@ public class ConfigurationFactoryTest {
     }
 
     /**
-     * Sanity test to ensure all config names on classpath are loadable.
+     * Initial test to ensure all config names on classpath are loadable.
      */
     @Test
     public void testLoadAllConfigs() throws ConfigurationException {
@@ -46,7 +46,7 @@ public class ConfigurationFactoryTest {
     }
 
     /**
-     * Sanity test to ensure all configs on classpath can be fully loaded and parsed.
+     * Initial test to ensure all configs on classpath can be fully loaded and parsed.
      */
     @Test
     public void testLoadAndPrintAllConfigs() throws ConfigurationException {
