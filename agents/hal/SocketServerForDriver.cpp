@@ -96,6 +96,7 @@ int StartSocketServerForDriver(const string& callback_socket_name,
     return -1;
   }
 
+  unlink(callback_socket_name.c_str());
   bzero((char*) &serv_addr, sizeof(serv_addr));
   serv_addr.sun_family = AF_UNIX;
   strcpy(serv_addr.sun_path, callback_socket_name.c_str());
