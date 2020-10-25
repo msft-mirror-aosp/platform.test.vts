@@ -68,7 +68,7 @@ LOCAL_SRC_FILES := \
 
 LOCAL_C_INCLUDES := \
   ${vtslib_interfacespec_includes} \
-  system/core/base/include \
+  system/libbase/include \
 
 LOCAL_SHARED_LIBRARIES := \
   ${vtslib_interfacespec_shared_libraries} \
