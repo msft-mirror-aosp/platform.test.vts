@@ -24,14 +24,12 @@ import com.android.tradefed.log.LogUtil.CLog;
 import com.android.tradefed.testtype.DeviceJUnit4ClassRunner;
 import com.android.tradefed.testtype.junit4.AfterClassWithInfo;
 import com.android.tradefed.testtype.junit4.BaseHostJUnit4Test;
-import com.android.tradefed.util.AbiFormatter;
 import com.android.tradefed.util.CommandResult;
 import com.android.tradefed.util.CommandStatus;
 import com.android.tradefed.util.IRunUtil;
 import com.android.tradefed.util.RunUtil;
 import java.io.File;
 import java.lang.Thread;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.regex.Matcher;
@@ -53,13 +51,14 @@ public class FastbootVerifyUserspaceTest extends BaseHostJUnit4Test {
     private ITestDevice mDevice;
     private IRunUtil mRunUtil = RunUtil.getDefault();
     private String mFuzzyFastbootPath;
+    private String executeShellKernelARM64 = "cat /proc/config.gz | gzip -d | grep CONFIG_ARM64=y";
 
     @Before
     public void setUp() throws Exception {
         mDevice = getDevice();
 
-        ArrayList<String> supportedAbis = new ArrayList<>(Arrays.asList(AbiFormatter.getSupportedAbis(mDevice, "")));
-        if (supportedAbis.contains("arm64-v8a")) {
+        boolean isKernelARM64 = mDevice.executeShellCommand(executeShellKernelARM64).contains("CONFIG_ARM64");
+        if (isKernelARM64) {
             String output = mDevice.executeShellCommand("uname -r");
             Pattern p = Pattern.compile("^(\\d+)\\.(\\d+)");
             Matcher m1 = p.matcher(output);
