@@ -18,6 +18,7 @@ cc_library_shared {
 
     name: "libvts_multidevice_proto",
     host_supported: true,
+    product_available: true,
     // TODO(b/153609531): remove when no longer needed.
     native_bridge_supported: true,
 
@@ -54,6 +55,7 @@ cc_library_shared {
 
 cc_library_shared {
     name: "libvts_proto_fuzzer_proto",
+    product_available: true,
     proto: {
         export_proto_headers: true,
         type: "full",
