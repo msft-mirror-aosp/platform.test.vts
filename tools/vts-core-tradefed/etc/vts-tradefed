@@ -85,18 +85,9 @@ if [ -z ${VTS_ROOT} ]; then
 fi;
 
 JAR_DIR=${VTS_ROOT}/android-vts/tools
-JARS="tradefed
-  loganalysis
-  compatibility-host-util
-  compatibility-host-util-tests
-  vts-tradefed
-  vts-tradefed-tests
-  compatibility-common-util-tests
-  compatibility-tradefed-tests"
 
-for JAR in $JARS; do
-    checkFile ${JAR_DIR}/${JAR}.jar
-    JAR_PATH=${JAR_PATH}:${JAR_DIR}/${JAR}.jar
+for JAR in ${JAR_DIR}/*.jar; do
+    JAR_PATH=${JAR_PATH}:${JAR}
 done
 JAR_PATH=${JAR_PATH:1} # Strip off leading ':'
 
