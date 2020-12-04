@@ -17,7 +17,6 @@
 cc_defaults {
 
     name: "libvts_resource-defaults",
-    product_available: true,
 
     cflags: [
         "-Wall",
