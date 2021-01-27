@@ -116,8 +116,8 @@ void HIDL_INSTRUMENTATION_FUNCTION_android_hardware_tests_msgq_V1_0_ITestMsgQ(
                     case details::HidlInstrumentor::SERVER_API_ENTRY:
                     case details::HidlInstrumentor::PASSTHROUGH_ENTRY:
                     {
-                        if ((*args).size() != 1) {
-                            LOG(ERROR) << "Number of arguments does not match. expect: 1, actual: " << (*args).size() << ", method name: getFmqUnsyncWrite, event type: " << event;
+                        if ((*args).size() != 2) {
+                            LOG(ERROR) << "Number of arguments does not match. expect: 2, actual: " << (*args).size() << ", method name: getFmqUnsyncWrite, event type: " << event;
                             break;
                         }
                         auto *arg_0 __attribute__((__unused__)) = msg.add_arg();
@@ -127,6 +127,14 @@ void HIDL_INSTRUMENTATION_FUNCTION_android_hardware_tests_msgq_V1_0_ITestMsgQ(
                             arg_0->mutable_scalar_value()->set_bool_t((*arg_val_0));
                         } else {
                             LOG(WARNING) << "argument 0 is null.";
+                        }
+                        auto *arg_1 __attribute__((__unused__)) = msg.add_arg();
+                        bool *arg_val_1 __attribute__((__unused__)) = reinterpret_cast<bool*> ((*args)[1]);
+                        if (arg_val_1 != nullptr) {
+                            arg_1->set_type(TYPE_SCALAR);
+                            arg_1->mutable_scalar_value()->set_bool_t((*arg_val_1));
+                        } else {
+                            LOG(WARNING) << "argument 1 is null.";
                         }
                         break;
                     }

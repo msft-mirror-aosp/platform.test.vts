@@ -67,7 +67,8 @@ bool FuzzerExtended_android_hardware_tests_msgq_V1_0_ITestMsgQ::GetService(bool 
 }
 
 ::android::hardware::Return<void> Vts_android_hardware_tests_msgq_V1_0_ITestMsgQ::getFmqUnsyncWrite(
-    bool arg0 __attribute__((__unused__)), std::function<void(bool arg0,const ::android::hardware::MQDescriptorUnsync<int32_t>& arg1)> cb) {
+    bool arg0 __attribute__((__unused__)),
+    bool arg1 __attribute__((__unused__)), std::function<void(bool arg0,const ::android::hardware::MQDescriptorUnsync<int32_t>& arg1)> cb) {
     LOG(INFO) << "getFmqUnsyncWrite called";
     AndroidSystemCallbackRequestMessage callback_message;
     callback_message.set_id(GetCallbackID("getFmqUnsyncWrite"));
@@ -76,6 +77,10 @@ bool FuzzerExtended_android_hardware_tests_msgq_V1_0_ITestMsgQ::GetService(bool 
     var_msg0->set_type(TYPE_SCALAR);
     var_msg0->set_scalar_type("bool_t");
     var_msg0->mutable_scalar_value()->set_bool_t(arg0);
+    VariableSpecificationMessage* var_msg1 = callback_message.add_arg();
+    var_msg1->set_type(TYPE_SCALAR);
+    var_msg1->set_scalar_type("bool_t");
+    var_msg1->mutable_scalar_value()->set_bool_t(arg1);
     RpcCallToAgent(callback_message, callback_socket_name_);
     cb(static_cast<bool>(0), ::android::hardware::MQDescriptorUnsync<int32_t>());
     return ::android::hardware::Void();
@@ -235,8 +240,10 @@ bool FuzzerExtended_android_hardware_tests_msgq_V1_0_ITestMsgQ::CallFunction(
     if (!strcmp(func_name, "getFmqUnsyncWrite")) {
         bool arg0 = 0;
         arg0 = func_msg.arg(0).scalar_value().bool_t();
+        bool arg1 = 0;
+        arg1 = func_msg.arg(1).scalar_value().bool_t();
         LOG(DEBUG) << "local_device = " << hw_binder_proxy_.get();
-        hw_binder_proxy_->getFmqUnsyncWrite(arg0, [&](bool arg0 __attribute__((__unused__)),const ::android::hardware::MQDescriptorUnsync<int32_t>& arg1 __attribute__((__unused__))){
+        hw_binder_proxy_->getFmqUnsyncWrite(arg0, arg1, [&](bool arg0 __attribute__((__unused__)),const ::android::hardware::MQDescriptorUnsync<int32_t>& arg1 __attribute__((__unused__))){
             LOG(INFO) << "callback getFmqUnsyncWrite called";
             result_msg->set_name("getFmqUnsyncWrite");
             VariableSpecificationMessage* result_val_0 = result_msg->add_return_type_hidl();
