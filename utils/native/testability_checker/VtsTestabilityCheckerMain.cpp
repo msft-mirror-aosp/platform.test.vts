@@ -149,8 +149,8 @@ int main(int argc, char** argv) {
     root["instances"].append(instance);
   }
 
-  Json::FastWriter writer;
-  std::string json_output = writer.write(root);
+  Json::StreamWriterBuilder factory;
+  std::string json_output = Json::writeString(factory, root);
 
   cout << json_output;
   return 0;
