@@ -27,6 +27,7 @@ import com.android.tradefed.log.LogUtil.CLog;
 import com.android.tradefed.testtype.DeviceJUnit4ClassRunner;
 import com.android.tradefed.testtype.junit4.AfterClassWithInfo;
 import com.android.tradefed.testtype.junit4.BaseHostJUnit4Test;
+import com.android.tradefed.testtype.junit4.BeforeClassWithInfo;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -46,14 +47,16 @@ public class FastbootGetvarUserspaceTest extends BaseHostJUnit4Test {
     private static final int ANDROID_RELEASE_VERSION_R = 11;
 
     private ITestDevice mDevice;
-    private String executeShellKernelARM64 = "cat /proc/config.gz | gzip -d | grep CONFIG_ARM64=y";
+    private static String executeShellKernelARM64 =
+            "cat /proc/config.gz | gzip -d | grep CONFIG_ARM64=y";
 
-    @Before
-    public void setUp() throws Exception {
-        mDevice = getDevice();
-        boolean isKernelARM64 = mDevice.executeShellCommand(executeShellKernelARM64).contains("CONFIG_ARM64");
+    @BeforeClassWithInfo
+    public static void setUpClass(TestInformation testInfo) throws Exception {
+        boolean isKernelARM64 = testInfo.getDevice()
+                                        .executeShellCommand(executeShellKernelARM64)
+                                        .contains("CONFIG_ARM64");
         if (isKernelARM64) {
-            String output = mDevice.executeShellCommand("uname -r");
+            String output = testInfo.getDevice().executeShellCommand("uname -r");
             Pattern p = Pattern.compile("^(\\d+)\\.(\\d+)");
             Matcher m1 = p.matcher(output);
             Assert.assertTrue(m1.find());
@@ -62,6 +65,11 @@ public class FastbootGetvarUserspaceTest extends BaseHostJUnit4Test {
                               (Integer.parseInt(m1.group(1)) == 5 &&
                                Integer.parseInt(m1.group(2)) < 4));
         }
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        mDevice = getDevice();
 
         // Make sure the device is in fastbootd mode.
         if (!TestDeviceState.FASTBOOT.equals(mDevice.getDeviceState())) {
