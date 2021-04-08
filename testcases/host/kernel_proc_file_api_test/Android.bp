@@ -45,4 +45,7 @@ python_test_host {
         "vts",
     ],
     test_config: "kernel_proc_file_api_test.xml",
+    test_options: {
+        unit_test: false,
+    },
 }

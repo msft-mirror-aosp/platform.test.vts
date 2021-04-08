@@ -24,6 +24,7 @@ import com.android.tradefed.log.LogUtil.CLog;
 import com.android.tradefed.testtype.DeviceJUnit4ClassRunner;
 import com.android.tradefed.testtype.junit4.AfterClassWithInfo;
 import com.android.tradefed.testtype.junit4.BaseHostJUnit4Test;
+import com.android.tradefed.testtype.junit4.BeforeClassWithInfo;
 import com.android.tradefed.util.CommandResult;
 import com.android.tradefed.util.CommandStatus;
 import com.android.tradefed.util.IRunUtil;
@@ -51,15 +52,16 @@ public class FastbootVerifyUserspaceTest extends BaseHostJUnit4Test {
     private ITestDevice mDevice;
     private IRunUtil mRunUtil = RunUtil.getDefault();
     private String mFuzzyFastbootPath;
-    private String executeShellKernelARM64 = "cat /proc/config.gz | gzip -d | grep CONFIG_ARM64=y";
+    private static String executeShellKernelARM64 =
+            "cat /proc/config.gz | gzip -d | grep CONFIG_ARM64=y";
 
-    @Before
-    public void setUp() throws Exception {
-        mDevice = getDevice();
-
-        boolean isKernelARM64 = mDevice.executeShellCommand(executeShellKernelARM64).contains("CONFIG_ARM64");
+    @BeforeClassWithInfo
+    public static void setUpClass(TestInformation testInfo) throws Exception {
+        boolean isKernelARM64 = testInfo.getDevice()
+                                        .executeShellCommand(executeShellKernelARM64)
+                                        .contains("CONFIG_ARM64");
         if (isKernelARM64) {
-            String output = mDevice.executeShellCommand("uname -r");
+            String output = testInfo.getDevice().executeShellCommand("uname -r");
             Pattern p = Pattern.compile("^(\\d+)\\.(\\d+)");
             Matcher m1 = p.matcher(output);
             Assert.assertTrue(m1.find());
@@ -68,6 +70,11 @@ public class FastbootVerifyUserspaceTest extends BaseHostJUnit4Test {
                               (Integer.parseInt(m1.group(1)) == 5 &&
                                Integer.parseInt(m1.group(2)) < 4));
         }
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        mDevice = getDevice();
 
         CompatibilityBuildHelper buildHelper = new CompatibilityBuildHelper(getBuild());
         File file = buildHelper.getTestFile("fuzzy_fastboot", getAbi());
