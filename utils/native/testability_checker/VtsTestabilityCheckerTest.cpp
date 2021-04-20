@@ -24,23 +24,21 @@
 
 using namespace testing;
 
-using android::hidl::base::V1_0::IBase;
-using android::hidl::manager::V1_0::IServiceManager;
-using android::hidl::manager::V1_0::IServiceNotification;
 using android::hardware::hidl_array;
 using android::hardware::hidl_death_recipient;
 using android::hardware::hidl_handle;
 using android::hardware::hidl_string;
 using android::hardware::hidl_vec;
+using android::hidl::base::V1_0::IBase;
+using android::hidl::manager::V1_0::IServiceManager;
+using android::hidl::manager::V1_0::IServiceNotification;
 using android::vintf::Arch;
 using android::vintf::CompatibilityMatrix;
+using android::vintf::fromXml;
 using android::vintf::HalManifest;
 using android::vintf::ManifestHal;
 using android::vintf::MatrixHal;
 using android::vintf::Version;
-using android::vintf::XmlConverter;
-using android::vintf::gCompatibilityMatrixConverter;
-using android::vintf::gHalManifestConverter;
 using std::set;
 using std::string;
 
@@ -157,7 +155,7 @@ class VtsTestabilityCheckerTest : public ::testing::Test {
         "        </interface>\n"
         "    </hal>\n"
         "</manifest>\n";
-    gHalManifestConverter(&vm, xml);
+    EXPECT_TRUE(fromXml(&vm, xml));
     return vm;
   }
 
@@ -176,7 +174,7 @@ class VtsTestabilityCheckerTest : public ::testing::Test {
         "        </interface>\n"
         "    </hal>\n"
         "</manifest>\n";
-    gHalManifestConverter(&fm, xml);
+    EXPECT_TRUE(fromXml(&fm, xml));
     return fm;
   }
 
@@ -256,7 +254,7 @@ class VtsTestabilityCheckerTest : public ::testing::Test {
         "        </interface>\n"
         "    </hal>\n"
         "</compatibility-matrix>\n";
-    gCompatibilityMatrixConverter(&cm, xml);
+    EXPECT_TRUE(fromXml(&cm, xml));
     return cm;
   }
 
