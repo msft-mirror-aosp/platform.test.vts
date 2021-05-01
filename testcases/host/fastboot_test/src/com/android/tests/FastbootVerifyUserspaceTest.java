@@ -65,10 +65,8 @@ public class FastbootVerifyUserspaceTest extends BaseHostJUnit4Test {
             Pattern p = Pattern.compile("^(\\d+)\\.(\\d+)");
             Matcher m1 = p.matcher(output);
             Assert.assertTrue(m1.find());
-            Assume.assumeTrue("Skipping test for fastbootd on GKI",
-                              Integer.parseInt(m1.group(1)) < 5 ||
-                              (Integer.parseInt(m1.group(1)) == 5 &&
-                               Integer.parseInt(m1.group(2)) < 4));
+            Assume.assumeFalse("Skipping test for fastbootd on GKI 1.0",
+                    (Integer.parseInt(m1.group(1)) == 5 && Integer.parseInt(m1.group(2)) == 4));
         }
     }
 
