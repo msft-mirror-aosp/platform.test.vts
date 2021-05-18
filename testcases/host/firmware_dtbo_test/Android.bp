@@ -17,7 +17,6 @@ java_test_host {
     libs: [
         "compatibility-tradefed",
         "tradefed",
-        "tradefed-common-util",
         "vts-core-tradefed-harness",
     ],
     srcs: ["src/**/*.java"],
