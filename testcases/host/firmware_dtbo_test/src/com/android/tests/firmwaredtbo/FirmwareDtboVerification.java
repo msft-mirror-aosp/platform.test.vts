@@ -204,16 +204,34 @@ public class FirmwareDtboVerification extends BaseHostJUnit4Test {
         if (!hostDtboImage.exists()) {
             testCheckDTBOPartition();
         }
-        String cmd = "cat /proc/cmdline |"
-                + "grep -o \"'androidboot.dtbo_idx=[^ ]*'\" |"
-                + "cut -d \"=\" -f 2 ";
-        CommandResult cmdResult = mDevice.executeShellV2Command(cmd);
-        Assert.assertEquals(String.format("Checking kernel dtbo index: %s", cmdResult.getStderr()),
-                cmdResult.getExitCode().intValue(), 0);
-        String overlay_idx_string = cmdResult.getStdout().replace("\n", "");
-        CLog.d("overlay_idx_string=%s", overlay_idx_string);
-        Assert.assertNotEquals(
-                "Kernel command line missing androidboot.dtbo_idx", overlay_idx_string.length(), 0);
+
+        // look for dtbo_idx in bootconfig first, then fall back to cmdline
+        // /proc/bootconfig does not exist on older devices, so command may fail
+        String bootconfig_cmd = "cat /proc/bootconfig |"
+                + "grep -o \"'androidboot.dtbo_idx = [^ ]*'\" |"
+                + "cut -d \"\\\"\" -f 2 ";
+        CommandResult cmdResult = mDevice.executeShellV2Command(bootconfig_cmd);
+        String bootconfig_overlay_idx_string = cmdResult.getStdout().replace("\n", "");
+        String overlay_idx_string;
+        if (cmdResult.getExitCode().intValue() == 0
+                && bootconfig_overlay_idx_string.length() != 0) {
+            CLog.d("overlay_idx_string=%s", bootconfig_overlay_idx_string);
+            overlay_idx_string = bootconfig_overlay_idx_string;
+        } else {
+            String cmdline_cmd = "cat /proc/cmdline |"
+                    + "grep -o \"'androidboot.dtbo_idx=[^ ]*'\" |"
+                    + "cut -d \"=\" -f 2 ";
+            cmdResult = mDevice.executeShellV2Command(cmdline_cmd);
+            Assert.assertEquals(
+                    String.format("Checking kernel dtbo index: %s", cmdResult.getStderr()),
+                    cmdResult.getExitCode().intValue(), 0);
+            overlay_idx_string = cmdResult.getStdout().replace("\n", "");
+            CLog.d("overlay_idx_string=%s", overlay_idx_string);
+            Assert.assertNotEquals(
+                    "Bootconfig and kernel command line missing androidboot.dtbo_idx",
+                    overlay_idx_string.length(), 0);
+        }
+
         String verificationTestPath = null;
         String ufdtVerifier = "ufdt_verify_overlay";
         ArrayList<String> matchedResults =
