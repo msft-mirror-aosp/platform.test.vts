@@ -63,7 +63,7 @@ public class VtsPythonVirtualenvPreparer implements ITargetPreparer, ITargetClea
     protected static final String VIRTUAL_ENV_PATH = "VIRTUALENVPATH";
     private static final int BASE_TIMEOUT = 1000 * 60;
     private static final String[] DEFAULT_DEP_MODULES = {"enum", "future", "futures",
-            "google-api-python-client", "httplib2", "oauth2client", "protobuf", "requests"};
+            "google-api-python-client", "httplib2", "oauth2client", "protobuf==3.17.3", "requests"};
 
     @Option(name = "venv-dir", description = "path of an existing virtualenv to use")
     private File mVenvDir = null;
