@@ -39,7 +39,7 @@
         <option name="dep-module" value="google-cloud-storage" />
         <option name="dep-module" value="httplib2" />
         <option name="dep-module" value="oauth2client" />
-        <option name="dep-module" value="protobuf" />
+        <option name="dep-module" value="protobuf==3.17.3" />
         <option name="dep-module" value="pyasn1>=0.4.1" />
         <option name="dep-module" value="pyserial" />
         <option name="dep-module" value="requests" />
