@@ -277,10 +277,6 @@ def run_proc_file_test(test_object):
         if test_object in TEST_OBJECTS_64 and not self.is64Bit(self.dut):
             logging.info("Skip test for 64-bit kernel.")
             return
-        # Make sure device is ready for adb.
-        # TODO(b/177210665): Remove the workaround once the root cause is identified.
-        self.adb.Execute(["wait-for-device"], timeout=900)
-        self.adb.Execute(["root"])
         test_object.set_api_level(self.dut)
         filepath = test_object.get_path()
         if not self.dut.Exists(filepath) and test_object.file_optional(dut=self.dut):
