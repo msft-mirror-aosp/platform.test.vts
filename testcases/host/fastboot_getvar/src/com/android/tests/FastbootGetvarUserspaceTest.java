@@ -17,9 +17,12 @@
 package com.android.tests.fastboot_getvar;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.android.tradefed.device.DeviceProperties;
 import com.android.tradefed.device.ITestDevice;
 import com.android.tradefed.invoker.TestInformation;
 import com.android.tradefed.log.LogUtil.CLog;
@@ -46,6 +49,7 @@ public class FastbootGetvarUserspaceTest extends BaseHostJUnit4Test {
     private static final int ANDROID_RELEASE_VERSION_R = 11;
 
     private static ITestDevice sDevice;
+    private static String sCodeName;
     private static String executeShellKernelARM64 =
             "cat /proc/config.gz | gzip -d | grep CONFIG_ARM64=y";
     private static boolean isGKI10;
@@ -64,6 +68,13 @@ public class FastbootGetvarUserspaceTest extends BaseHostJUnit4Test {
             assertTrue(m1.find());
             isGKI10 = (Integer.parseInt(m1.group(1)) == 5 && Integer.parseInt(m1.group(2)) == 4);
         }
+
+        // Gets the code name via adb first. The following test cases might
+        // assert different values based on if the build is a final release build
+        // or not, where the value of the code name will be "REL" in this case.
+        sCodeName = sDevice.getProperty(DeviceProperties.BUILD_CODENAME);
+        assertNotNull(sCodeName);
+        sCodeName = sCodeName.trim();
 
         // Transfers from adb to fastbootd.
         if (!isGKI10) {
@@ -113,13 +124,18 @@ public class FastbootGetvarUserspaceTest extends BaseHostJUnit4Test {
     public void testVndkVersion() throws Exception {
         String vndkVersion = sDevice.getFastbootVariable("version-vndk");
         CLog.d("vndk version: '%s'", vndkVersion);
-        // The value of vndkVersion might be a letter on pre-release builds, e.g., R,
-        // or is a number representing the API level on final release builds, e.g., 30.
-        try {
-            int intVndkVersion = Integer.parseInt(vndkVersion);
-            assertTrue(intVndkVersion >= PLATFORM_API_LEVEL_R);
-        } catch (NumberFormatException nfe) {
-            assertTrue(vndkVersion.matches("[A-Z]+"));
+        // The value of vndkVersion might be a letter or a string on pre-release builds,
+        // e.g., R or Tiramisu.
+        // And it is a number representing the API level on final release builds, e.g., 30.
+        if ("REL".equals(sCodeName)) {
+            try {
+                int intVndkVersion = Integer.parseInt(vndkVersion);
+                assertTrue(intVndkVersion >= PLATFORM_API_LEVEL_R);
+            } catch (NumberFormatException nfe) {
+                fail("ro.vndk.version should be a number. But the current value is " + vndkVersion);
+            }
+        } else {
+            assertNotNull(vndkVersion);
         }
     }
 
@@ -204,15 +220,6 @@ public class FastbootGetvarUserspaceTest extends BaseHostJUnit4Test {
         String[] devicePlatform = fingerprintSegs[2].split(":");
         assertEquals(2, devicePlatform.length);
         assertTrue(devicePlatform[0].matches("^[a-zA-Z0-9_-]+$")); // DEVICE
-
-        // Platform version is a letter on pre-release builds, e.g., R, or
-        // is a number on final release # builds, e.g., 11.
-        try {
-            int releaseVersion = Integer.parseInt(devicePlatform[1]); // VERSION.RELEASE
-            assertTrue(releaseVersion >= ANDROID_RELEASE_VERSION_R);
-        } catch (NumberFormatException nfe) {
-            assertTrue(devicePlatform[1].matches("[A-Z]+"));
-        }
 
         assertTrue(fingerprintSegs[3].matches("^[a-zA-Z0-9._-]+$")); // ID
 
