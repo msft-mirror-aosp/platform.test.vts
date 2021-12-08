@@ -109,14 +109,11 @@ public class FastbootGetvarUserspaceTest extends BaseHostJUnit4Test {
     public void testOsVersion() throws Exception {
         String osVersion = sDevice.getFastbootVariable("version-os");
         CLog.d("os version: '%s'", osVersion);
-        // The value of osVersion might be a letter on pre-release builds, e.g., R,
-        // or is a number representing the Android release version, e.g., 11.
-        try {
-            int intOsVersion = Integer.parseInt(osVersion);
-            assertTrue(intOsVersion >= ANDROID_RELEASE_VERSION_R);
-        } catch (NumberFormatException nfe) {
-            assertTrue(osVersion.matches("[A-Z]+"));
-        }
+        // The value of osVersion is derived from "ro.build.version.release",
+        // which is a user-visible version string. The value does not have
+        // has any particular structure. See https://r.android.com/657597 for
+        // details.
+        assertNotNull(osVersion);
     }
 
     /* Devices launching in R and after must export version-vndk. */
