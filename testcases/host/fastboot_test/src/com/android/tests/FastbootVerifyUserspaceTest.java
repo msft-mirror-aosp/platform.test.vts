@@ -45,8 +45,8 @@ import org.junit.runners.JUnit4;
 /* VTS test to verify userspace fastboot implementation. */
 @RunWith(DeviceJUnit4ClassRunner.class)
 public class FastbootVerifyUserspaceTest extends BaseHostJUnit4Test {
-    // Default maximum command run time is set to 1 minute.
-    private static final long MAX_CMD_RUN_TIME = 60000L;
+    // Default maximum command run time is set to 90 seconds.
+    private static final long MAX_CMD_RUN_TIME = 90000L;
 
     private static ITestDevice sDevice;
     private static String executeShellKernelARM64 =
