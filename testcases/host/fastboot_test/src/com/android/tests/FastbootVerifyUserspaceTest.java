@@ -18,6 +18,8 @@ package com.android.tests.fastboot;
 
 import com.android.compatibility.common.tradefed.build.CompatibilityBuildHelper;
 import com.android.tradefed.device.ITestDevice;
+import com.android.tradefed.device.IManagedTestDevice;
+import com.android.tradefed.device.TestDeviceState;
 import com.android.tradefed.invoker.TestInformation;
 import com.android.tradefed.log.LogUtil.CLog;
 import com.android.tradefed.testtype.DeviceJUnit4ClassRunner;
@@ -93,6 +95,13 @@ public class FastbootVerifyUserspaceTest extends BaseHostJUnit4Test {
     @AfterClassWithInfo
     public static void tearDownClass(TestInformation testInfo) throws Exception {
         if (!isGKI) {
+            // Make sure the device state still is FASTBOOTD after the test class have
+            // been executed, because fastboot commands in the tests will disrupt
+            // device state
+            if (!TestDeviceState.FASTBOOTD.equals(testInfo.getDevice().getDeviceState())) {
+                ((IManagedTestDevice) testInfo.getDevice())
+                        .setDeviceState(TestDeviceState.FASTBOOTD);
+            }
             testInfo.getDevice().reboot(); // back to adb.
         }
     }
