@@ -16,9 +16,10 @@
 
 package com.android.tests.fastboot;
 
+import android.platform.test.annotations.RequiresDevice;
 import com.android.compatibility.common.tradefed.build.CompatibilityBuildHelper;
-import com.android.tradefed.device.ITestDevice;
 import com.android.tradefed.device.IManagedTestDevice;
+import com.android.tradefed.device.ITestDevice;
 import com.android.tradefed.device.TestDeviceState;
 import com.android.tradefed.invoker.TestInformation;
 import com.android.tradefed.log.LogUtil.CLog;
@@ -45,6 +46,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 /* VTS test to verify userspace fastboot implementation. */
+@RequiresDevice
 @RunWith(DeviceJUnit4ClassRunner.class)
 public class FastbootVerifyUserspaceTest extends BaseHostJUnit4Test {
     // Default maximum command run time is set to 90 seconds.
