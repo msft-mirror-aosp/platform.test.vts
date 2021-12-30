@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import android.platform.test.annotations.RequiresDevice;
 import com.android.tradefed.device.DeviceProperties;
 import com.android.tradefed.device.ITestDevice;
 import com.android.tradefed.invoker.TestInformation;
@@ -43,6 +44,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /* VTS test to verify userspace fastboot getvar information. */
+@RequiresDevice
 @RunWith(DeviceJUnit4ClassRunner.class)
 public class FastbootGetvarUserspaceTest extends BaseHostJUnit4Test {
     private static final int PLATFORM_API_LEVEL_R = 30;
