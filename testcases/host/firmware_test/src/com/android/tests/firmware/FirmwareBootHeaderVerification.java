@@ -73,7 +73,7 @@ public class FirmwareBootHeaderVerification extends BaseHostJUnit4Test {
     }
 
     private boolean isFullfeelPrecondition() throws DeviceNotAvailableException {
-        if (mSupportedAbis.contains("x86")) {
+        if (mSupportedAbis.contains("x86") || mSupportedAbis.contains("x86_64")) {
             mBlockDevPath = "/dev/block";
             CommandResult cmdResult = mDevice.executeShellV2Command("cat /proc/cmdline |"
                     + "grep -o \"'androidboot.acpio_idx=[^ ]*'\" |"
