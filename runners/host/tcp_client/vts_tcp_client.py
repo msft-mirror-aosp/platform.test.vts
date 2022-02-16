@@ -462,8 +462,8 @@ class VtsTcpClient(object):
             stderr = [self.FAIL_RESPONSE_MSG]
             self.error = self.FAIL_RESPONSE_MSG
         else:
-            stdout = resp.stdout_str
-            stderr = resp.stderr_str
+            stdout = resp.stdout
+            stderr = resp.stderr
             exit_code = resp.exit_code
             self.error = None
 
