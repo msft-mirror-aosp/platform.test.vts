@@ -1,4 +1,5 @@
-// Copyright (C) 2019 The Android Open Source Project
+//
+// Copyright (C) 2016 The Android Open Source Project
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,33 +12,48 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
 
 package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
-java_library_host {
-    name: "vts-core-tradefed-harness",
-    srcs: ["src/**/*.java"],
-    java_resource_dirs: ["res"],
-    libs: [
-        "tradefed",
-        "compatibility-host-util",
-    ],
-    static_libs: [
-        "compatibility-tradefed",
-    ],
-}
+cc_test {
+    name: "VtsHalPowerTestCases",
+    multilib: {
+        lib32: {
+            suffix: "32",
+        },
+        lib64: {
+            suffix: "64",
+        },
+    },
 
-tradefed_binary_host {
-    name: "vts-tradefed",
-    wrapper: "etc/vts-tradefed",
-    short_name: "VTS",
-    full_name: "Vendor Test Suite",
-    version: "12_r1",
-    static_libs: [
-        "cts-tradefed-harness",
-        "vts-core-tradefed-harness",
+    shared_libs: [
+        "libdl",
+        "libhardware",
     ],
-    required: ["compatibility-host-util"],
+
+    whole_static_libs: ["libVtsGtestMain"],
+
+    static_libs: [
+        "libbase",
+        "libtinyxml2",
+        "liblog",
+        "libgtest",
+    ],
+
+    // Tag this module as a vts10 test artifact
+    test_suites: [
+        "vts10",
+    ],
+
+    srcs: ["hal_power_basic_test.cpp"],
+
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Wunused",
+        "-Werror",
+    ],
 }
