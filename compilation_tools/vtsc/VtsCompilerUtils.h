@@ -17,10 +17,9 @@
 #ifndef VTS_COMPILATION_TOOLS_VTSC_CODE_UTILS_H_
 #define VTS_COMPILATION_TOOLS_VTSC_CODE_UTILS_H_
 
-#include <hidl-util/FQName.h>
-#include <sys/types.h>
-
 #include <string>
+
+#include <hidl-util/FQName.h>
 
 #include "test/vts/proto/ComponentSpecificationMessage.pb.h"
 
