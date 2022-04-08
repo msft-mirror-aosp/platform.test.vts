@@ -59,7 +59,7 @@ void VtsCoverageProcessor::UpdateCoverageData(
         break;
       }
     }
-    // Validate
+    // sanity check.
     if (msg_to_be_updated->covered_line_count() < 0) {
       cerr << __func__ << ": covered_line_count should not be negative."
            << endl;
@@ -116,7 +116,7 @@ void VtsCoverageProcessor::MergeCoverage(const string& coverage_file_dir,
 void VtsCoverageProcessor::MergeCoverageMsg(
     const CoverageReportMessage& ref_coverage_msg,
     CoverageReportMessage* merged_coverage_msg) {
-  // File path consistency check.
+  // sanity check.
   if (ref_coverage_msg.file_path() != merged_coverage_msg->file_path()) {
     cerr << "Trying to merge coverage data for different files." << endl;
     exit(-1);

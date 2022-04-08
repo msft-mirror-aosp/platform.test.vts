@@ -104,7 +104,7 @@ class HalHidlProfilerCodeGen : public ProfilerCodeGenBase {
     const ComponentSpecificationMessage& message) override;
   void GenerateMacros(Formatter& out,
     const ComponentSpecificationMessage& message) override;
-  virtual void GenerateProfilerCheck(
+  virtual void GenerateProfilerSanityCheck(
       Formatter& out, const ComponentSpecificationMessage& message) override;
   virtual void GenerateLocalVariableDefinition(Formatter& out,
     const ComponentSpecificationMessage& message) override;

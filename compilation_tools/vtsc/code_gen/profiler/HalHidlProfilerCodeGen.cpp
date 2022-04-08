@@ -553,7 +553,7 @@ void HalHidlProfilerCodeGen::GenerateMacros(
   out << "\n";
 }
 
-void HalHidlProfilerCodeGen::GenerateProfilerCheck(
+void HalHidlProfilerCodeGen::GenerateProfilerSanityCheck(
     Formatter& out, const ComponentSpecificationMessage& message) {
   out << "if (strcmp(package, \"" << GetPackageName(message) << "\") != 0) {\n";
   out.indent();
