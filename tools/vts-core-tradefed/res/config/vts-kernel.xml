@@ -23,6 +23,7 @@
     <option name="compatibility:include-filter" value="binderLibTest" />
     <option name="compatibility:include-filter" value="binderSafeInterfaceTest  " />
     <option name="compatibility:include-filter" value="bpf_module_test" />
+    <option name="compatibility:include-filter" value="drop_caches_test" />
     <option name="compatibility:include-filter" value="ion-unit-tests" />
     <option name="compatibility:include-filter" value="KernelApiSysfsTest" />
     <option name="compatibility:include-filter" value="KernelDynamicPartitionsTest  " />
@@ -31,7 +32,6 @@
     <option name="compatibility:include-filter" value="memunreachable_binder_test" />
     <option name="compatibility:include-filter" value="VtsBootconfigTest" />
     <option name="compatibility:include-filter" value="vts_core_liblp_test  " />
-    <option name="compatibility:include-filter" value="vts_core_test_binary_qtaguid_module" />
     <option name="compatibility:include-filter" value="vts_kernel_encryption_test" />
     <option name="compatibility:include-filter" value="vts_kernel_net_tests" />
     <option name="compatibility:include-filter" value="vts_kernel_proc_file_api_test" />
