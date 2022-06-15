@@ -25,7 +25,6 @@ cc_library_static {
         "VtsCoreUtil.cpp",
     ],
 
-    vendor_available: true,
     cflags: ["-Wall", "-Werror"],
 
     shared_libs: [
