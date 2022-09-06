@@ -29,7 +29,7 @@ java_test_host {
         "vts",
     ],
     data_native_bins: [
-        "mkdtboimg.py",
+        "mkdtboimg",
     ],
     target_required: ["ufdt_verify_overlay"],
 }
