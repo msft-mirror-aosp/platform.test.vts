@@ -62,8 +62,8 @@ public class FirmwareDtboVerification extends BaseHostJUnit4Test {
     private static final int COMPRESSION_FLAGS_BIT_MASK = 0x0f;
     // FDT Magic.
     private static final int FDT_MAGIC = 0xd00dfeed;
-    // mkdtboimg.py tool name
-    private static final String MKDTBOIMG_TOOL = "mkdtboimg.py";
+    // mkdtboimg tool name
+    private static final String MKDTBOIMG_TOOL = "mkdtboimg";
 
     private static File mTemptFolder = null;
     private ITestDevice mDevice;
@@ -91,7 +91,7 @@ public class FirmwareDtboVerification extends BaseHostJUnit4Test {
         mTemptFolder.delete();
     }
 
-    /* Validates DTBO partition using mkdtboimg.py */
+    /* Validates DTBO partition using mkdtboimg */
     @Test
     public void testCheckDTBOPartition() throws Exception {
         // Dump dtbo image from device.
@@ -109,7 +109,7 @@ public class FirmwareDtboVerification extends BaseHostJUnit4Test {
         Assert.assertTrue("Pull " + dtboPaths.get(0) + " failed!",
                 mDevice.pullFile(dtboPaths.get(0), hostDtboImage));
         CLog.d("hostDtboImage is %s", hostDtboImage);
-        // Using mkdtboimg.py to extract dtbo image.
+        // Using mkdtboimg to extract dtbo image.
         File mkdtboimgBin = getTestInformation().getDependencyFile(MKDTBOIMG_TOOL, false);
         File unpackedDtbo = new File(mTemptFolder, "dumped_dtbo");
         RunUtil runUtil = new RunUtil();
