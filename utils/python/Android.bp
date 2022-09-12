@@ -33,12 +33,4 @@ python_library_host {
         "vndk/__init__.py",
         "vndk/vndk_utils.py",
     ],
-    version: {
-        py2: {
-            enabled: true,
-        },
-        py3: {
-            enabled: true,
-        },
-    },
 }
