@@ -278,9 +278,9 @@ if __name__ == "__main__":
     # hidl-gen/vtsc_path/canonical_dar/output_dir.
     try:
         opts, _ = getopt.getopt(sys.argv[1:], "h:p:c:o:t:")
-    except getopt.GetoptError, err:
-        print "Usage: python test_vtsc.py [-h hidl_gen_path] [-p vtsc_path] " \
-              "[-c canonical_dir] [-o output_dir] [-t temp_dir]"
+    except getopt.GetoptError as err:
+        print("Usage: python test_vtsc.py [-h hidl_gen_path] [-p vtsc_path] "
+              "[-c canonical_dir] [-o output_dir] [-t temp_dir]")
         sys.exit(1)
     for opt, val in opts:
         if opt == "-h":
@@ -294,7 +294,7 @@ if __name__ == "__main__":
         elif opt == "-t":
             temp_dir = val
         else:
-            print "unhandled option %s" % (opt, )
+            print("unhandled option %s" % (opt, ))
             sys.exit(1)
 
     suite = unittest.TestSuite()
