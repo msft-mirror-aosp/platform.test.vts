@@ -18,7 +18,7 @@
 ifneq ($(vts_run_on_host_mk_included),true)
 vts_run_on_host_mk_included := true
 
-ifneq ($(TARGET_ARCH),$(filter $(TARGET_ARCH),arm mips x86))
+ifneq ($(TARGET_ARCH),$(filter $(TARGET_ARCH),arm x86))
 LINKER = linker64
 else
 LINKER = linker
