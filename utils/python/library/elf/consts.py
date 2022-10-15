@@ -54,6 +54,7 @@ EM_X86_64 = 62
 EM_MIPS = 8
 EM_ARM = 40
 EM_AARCH64 = 183
+EM_RISCV = 243
 
 # Relocation types
 R_ARM_ABS32 = 0x02
@@ -64,6 +65,8 @@ R_386_32 = 1
 R_386_RELATIVE = 8
 R_X86_64_64 = 1
 R_X86_64_RELATIVE = 8
+R_RISCV_64 = 2
+R_RISCV_RELATIVE = 3
 
 # Section types
 SHT_NULL = 0
