@@ -114,7 +114,7 @@ public class FastbootGetvarUserspaceTest extends BaseHostJUnit4Test {
     @Test
     public void testCpuAbiInfo() throws Exception {
         final HashSet<String> allCpuAbis = new HashSet<String>(
-                Arrays.asList("armeabi-v7a", "arm64-v8a", "mips", "mips64", "x86", "x86_64"));
+                Arrays.asList("armeabi-v7a", "arm64-v8a", "mips", "mips64", "x86", "x86_64", "riscv64"));
         String cpuAbi = getTestInformation().getDevice().getFastbootVariable("cpu-abi");
         CLog.d("cpuAbi: '%s'", cpuAbi);
         assertTrue(allCpuAbis.contains(cpuAbi));
