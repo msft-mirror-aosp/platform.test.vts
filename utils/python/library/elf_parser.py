@@ -609,8 +609,6 @@ class ElfParser(object):
         """
         for abi_prefix, machine in (("arm64", consts.EM_AARCH64),
                                     ("arm", consts.EM_ARM),
-                                    ("mips64", consts.EM_MIPS),
-                                    ("mips", consts.EM_MIPS),
                                     ("x86_64", consts.EM_X86_64),
                                     ("x86", consts.EM_386)):
             if abi.startswith(abi_prefix):
