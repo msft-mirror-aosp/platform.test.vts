@@ -51,9 +51,9 @@ ET_CORE = 4         # Core file
 # e_machine
 EM_386 = 3
 EM_X86_64 = 62
-EM_MIPS = 8
 EM_ARM = 40
 EM_AARCH64 = 183
+EM_RISCV = 243
 
 # Relocation types
 R_ARM_ABS32 = 0x02
@@ -64,6 +64,8 @@ R_386_32 = 1
 R_386_RELATIVE = 8
 R_X86_64_64 = 1
 R_X86_64_RELATIVE = 8
+R_RISCV_64 = 2
+R_RISCV_RELATIVE = 3
 
 # Section types
 SHT_NULL = 0
@@ -156,10 +158,6 @@ PT_GNU_RELRO = 0x6474e552
 PT_ARM_ARCHEXT = 0x70000000
 PT_ARM_EXIDX = 0x70000001
 PT_ARM_UNWIND = 0x70000001
-PT_MIPS_REGINFO = 0x70000000
-PT_MIPS_RTPROC = 0x70000001
-PT_MIPS_OPTIONS = 0x70000002
-PT_MIPS_ABIFLAGS = 0x70000003
 
 # Dynamic array tags
 # Name     Value        d_un          Executable  Shared Object
