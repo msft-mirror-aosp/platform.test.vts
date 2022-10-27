@@ -67,7 +67,7 @@ class ArchiveParserTest(unittest.TestCase):
         archive = archive_parser.Archive(content)
         archive.Parse()
         self.assertIn(file_name, archive.files)
-        self.assertEquals(archive.files[file_name], message)
+        self.assertEqual(archive.files[file_name], message)
 
 if __name__ == "__main__":
     unittest.main()
