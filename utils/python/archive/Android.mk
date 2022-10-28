@@ -29,5 +29,5 @@ py_scripts := \
 $(LOCAL_BUILT_MODULE): PRIVATE_PY_SCRIPTS := $(py_scripts)
 $(LOCAL_BUILT_MODULE): $(py_scripts)
 	@echo "Regression test (build time): $(PRIVATE_MODULE)"
-	$(foreach py, $(PRIVATE_PY_SCRIPTS), (PYTHONPATH=$$PYTHONPATH:test python $(py)) &&) true
+	$(foreach py, $(PRIVATE_PY_SCRIPTS), (PYTHONPATH=$$PYTHONPATH:test python3 $(py)) &&) true
 	$(hide) touch $@
