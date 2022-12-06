@@ -208,8 +208,8 @@ public class FirmwareDtboVerification extends BaseHostJUnit4Test {
         // look for dtbo_idx in bootconfig first, then fall back to cmdline
         // /proc/bootconfig does not exist on older devices, so command may fail
         String bootconfig_cmd = "cat /proc/bootconfig |"
-                + "grep \"'androidboot.dtbo_idx = '\" |"
-                + "cut -d \"=\" -f 2 ";
+                + "grep -o \"'androidboot.dtbo_idx = [^ ]*'\" |"
+                + "cut -d \"\\\"\" -f 2 ";
         CommandResult cmdResult = mDevice.executeShellV2Command(bootconfig_cmd);
         String bootconfig_overlay_idx_string = cmdResult.getStdout().replace("\n", "");
         String overlay_idx_string;
@@ -256,8 +256,7 @@ public class FirmwareDtboVerification extends BaseHostJUnit4Test {
                 CommandStatus.SUCCESS);
         ArrayList<String> overlayArg = new ArrayList<>();
         for (String overlay_idx : overlay_idx_string.split(",")) {
-            String overlayFileName = "dumped_dtbo." +
-                        overlay_idx.replaceAll("\\s+", "").replaceAll("\"", "");
+            String overlayFileName = "dumped_dtbo." + overlay_idx.replaceAll("\\s+$", "");
             File overlayFile = new File(mTemptFolder, overlayFileName);
             // Push the dumped overlay dtbo files to the same direcly of ufdt_verify_overlay
             File remoteOverLayFile = new File(ufdtVerifierParent, overlayFileName);
