@@ -150,7 +150,9 @@ string VtsDriverCommUtil::VtsSocketRecvBytes() {
     bytes_read += result;
   }
   msg[msg_len] = '\0';
-  return string(msg, msg_len);
+  string tmp(msg, msg_len);
+  free(msg);  // free msg after it is copied
+  return tmp;
 }
 
 bool VtsDriverCommUtil::VtsSocketSendMessage(
