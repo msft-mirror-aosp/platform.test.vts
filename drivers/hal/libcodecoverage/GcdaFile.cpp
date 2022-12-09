@@ -72,6 +72,7 @@ unsigned GcdaFile::ReadStringArray(char** string_array, unsigned num_strings) {
 
   for (j = 0; j < num_strings; j++) {
     unsigned string_len = ReadUnsigned();
+    // NOLINTNEXTLINE(clang-analyzer-unix.MallocSizeof)
     string_array[j] = (char*)malloc(string_len * sizeof(unsigned));  // xmalloc
     for (i = 0; i < string_len; i++) {
       ((unsigned*)string_array[j])[i] = ReadUnsigned();
