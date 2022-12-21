@@ -208,8 +208,10 @@ public class FirmwareDtboVerification extends BaseHostJUnit4Test {
         // look for dtbo_idx in bootconfig first, then fall back to cmdline
         // /proc/bootconfig does not exist on older devices, so command may fail
         String bootconfig_cmd = "cat /proc/bootconfig |"
-                + "grep \"'androidboot.dtbo_idx = '\" |"
-                + "cut -d \"=\" -f 2 ";
+                + "grep \"'androidboot.dtbo_idx = .*$'\" |"
+                + "cut -d \"=\" -f 2 |"
+                + "sed \"'s/[ \\\"]//g'\"";
+        CLog.d("bootconfig_cmd = %s", bootconfig_cmd);
         CommandResult cmdResult = mDevice.executeShellV2Command(bootconfig_cmd);
         String bootconfig_overlay_idx_string = cmdResult.getStdout().replace("\n", "");
         String overlay_idx_string;
