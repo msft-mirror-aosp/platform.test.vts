@@ -62,8 +62,8 @@ public class FirmwareDtboVerification extends BaseHostJUnit4Test {
     private static final int COMPRESSION_FLAGS_BIT_MASK = 0x0f;
     // FDT Magic.
     private static final int FDT_MAGIC = 0xd00dfeed;
-    // mkdtboimg.py tool name
-    private static final String MKDTBOIMG_TOOL = "mkdtboimg.py";
+    // mkdtboimg tool name
+    private static final String MKDTBOIMG_TOOL = "mkdtboimg";
 
     private static File mTemptFolder = null;
     private ITestDevice mDevice;
@@ -91,7 +91,7 @@ public class FirmwareDtboVerification extends BaseHostJUnit4Test {
         mTemptFolder.delete();
     }
 
-    /* Validates DTBO partition using mkdtboimg.py */
+    /* Validates DTBO partition using mkdtboimg */
     @Test
     public void testCheckDTBOPartition() throws Exception {
         // Dump dtbo image from device.
@@ -109,7 +109,7 @@ public class FirmwareDtboVerification extends BaseHostJUnit4Test {
         Assert.assertTrue("Pull " + dtboPaths.get(0) + " failed!",
                 mDevice.pullFile(dtboPaths.get(0), hostDtboImage));
         CLog.d("hostDtboImage is %s", hostDtboImage);
-        // Using mkdtboimg.py to extract dtbo image.
+        // Using mkdtboimg to extract dtbo image.
         File mkdtboimgBin = getTestInformation().getDependencyFile(MKDTBOIMG_TOOL, false);
         File unpackedDtbo = new File(mTemptFolder, "dumped_dtbo");
         RunUtil runUtil = new RunUtil();
@@ -208,8 +208,10 @@ public class FirmwareDtboVerification extends BaseHostJUnit4Test {
         // look for dtbo_idx in bootconfig first, then fall back to cmdline
         // /proc/bootconfig does not exist on older devices, so command may fail
         String bootconfig_cmd = "cat /proc/bootconfig |"
-                + "grep -o \"'androidboot.dtbo_idx = [^ ]*'\" |"
-                + "cut -d \"\\\"\" -f 2 ";
+                + "grep \"'androidboot.dtbo_idx = .*$'\" |"
+                + "cut -d \"=\" -f 2 |"
+                + "sed \"'s/[ \\\"]//g'\"";
+        CLog.d("bootconfig_cmd = %s", bootconfig_cmd);
         CommandResult cmdResult = mDevice.executeShellV2Command(bootconfig_cmd);
         String bootconfig_overlay_idx_string = cmdResult.getStdout().replace("\n", "");
         String overlay_idx_string;
@@ -256,7 +258,8 @@ public class FirmwareDtboVerification extends BaseHostJUnit4Test {
                 CommandStatus.SUCCESS);
         ArrayList<String> overlayArg = new ArrayList<>();
         for (String overlay_idx : overlay_idx_string.split(",")) {
-            String overlayFileName = "dumped_dtbo." + overlay_idx.replaceAll("\\s+$", "");
+            String overlayFileName = "dumped_dtbo." +
+                        overlay_idx.replaceAll("\\s+", "").replaceAll("\"", "");
             File overlayFile = new File(mTemptFolder, overlayFileName);
             // Push the dumped overlay dtbo files to the same direcly of ufdt_verify_overlay
             File remoteOverLayFile = new File(ufdtVerifierParent, overlayFileName);
