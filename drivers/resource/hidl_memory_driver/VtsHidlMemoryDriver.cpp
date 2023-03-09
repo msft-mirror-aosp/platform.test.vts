@@ -48,13 +48,13 @@ MemoryId VtsHidlMemoryDriver::Allocate(size_t mem_size) {
         } else {
           unique_ptr<hidl_memory> hidl_mem_ptr(new hidl_memory(mem));
           sp<IMemory> mem_ptr = mapMemory(mem);
-          mem_info.reset(new MemoryInfo{move(hidl_mem_ptr), mem_ptr});
+          mem_info.reset(new MemoryInfo{std::move(hidl_mem_ptr), mem_ptr});
         }
       });
   if (mem_info == nullptr) return -1;
   map_mutex_.lock();
   size_t new_mem_id = hidl_memory_map_.size();
-  hidl_memory_map_.emplace(new_mem_id, move(mem_info));
+  hidl_memory_map_.emplace(new_mem_id, std::move(mem_info));
   map_mutex_.unlock();
   return new_mem_id;
 }
@@ -68,10 +68,11 @@ MemoryId VtsHidlMemoryDriver::RegisterHidlMemory(size_t hidl_mem_address) {
                << "Unable to map hidl_memory to IMemory object.";
     return -1;
   }
-  unique_ptr<MemoryInfo> mem_info(new MemoryInfo{move(hidl_mem_ptr), mem_ptr});
+  unique_ptr<MemoryInfo> mem_info(
+      new MemoryInfo{std::move(hidl_mem_ptr), mem_ptr});
   map_mutex_.lock();
   size_t new_mem_id = hidl_memory_map_.size();
-  hidl_memory_map_.emplace(new_mem_id, move(mem_info));
+  hidl_memory_map_.emplace(new_mem_id, std::move(mem_info));
   map_mutex_.unlock();
   return new_mem_id;
 }
