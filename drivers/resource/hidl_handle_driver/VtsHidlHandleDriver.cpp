@@ -76,7 +76,7 @@ HandleId VtsHidlHandleDriver::CreateFileHandle(string filepath, int flag,
   // Insert the handle object into the map.
   map_mutex_.lock();
   size_t new_handle_id = hidl_handle_map_.size();
-  hidl_handle_map_.emplace(new_handle_id, move(hidl_handle_ptr));
+  hidl_handle_map_.emplace(new_handle_id, std::move(hidl_handle_ptr));
   map_mutex_.unlock();
   return new_handle_id;
 }
@@ -138,7 +138,7 @@ HandleId VtsHidlHandleDriver::RegisterHidlHandle(size_t hidl_handle_address) {
 
   map_mutex_.lock();
   size_t new_handle_id = hidl_handle_map_.size();
-  hidl_handle_map_.emplace(new_handle_id, move(hidl_handle_ptr));
+  hidl_handle_map_.emplace(new_handle_id, std::move(hidl_handle_ptr));
   map_mutex_.unlock();
   return new_handle_id;
 }
