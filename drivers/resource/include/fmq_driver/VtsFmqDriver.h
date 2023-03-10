@@ -631,7 +631,7 @@ QueueId VtsFmqDriver::InsertQueue(
       string(data_type), flavor, static_pointer_cast<void>(queue_object)});
   map_mutex_.lock();
   size_t new_queue_id = fmq_map_.size();
-  fmq_map_.emplace(new_queue_id, move(new_queue_info));
+  fmq_map_.emplace(new_queue_id, std::move(new_queue_info));
   map_mutex_.unlock();
   return new_queue_id;
 }
