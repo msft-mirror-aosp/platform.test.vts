@@ -53,9 +53,7 @@ bool GcdaRawCoverageParser::ParseMagic() {
 void GcdaRawCoverageParser::ParseBody() {
   unsigned tags[4];
   unsigned depth = 0;
-  bool found;
   unsigned base;
-  unsigned position;
   unsigned tag;
   unsigned length;
   unsigned tag_depth;
@@ -64,8 +62,6 @@ void GcdaRawCoverageParser::ParseBody() {
 
   gcda_file_->ReadUnsigned();  // stamp
   while (1) {
-    position = gcda_file_->Position();
-
     tag = gcda_file_->ReadUnsigned();
     if (!tag) break;
 
@@ -79,7 +75,6 @@ void GcdaRawCoverageParser::ParseBody() {
       }
       tag_depth--;
     }
-    found = false;
 
     if (tag) {
       if (depth && depth < tag_depth &&
