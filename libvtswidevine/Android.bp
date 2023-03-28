@@ -18,20 +18,20 @@ package {
 
 filegroup {
     name: "libvtswidevine-arm-prebuilts",
-    srcs: ["libvtswidevine/arm/*.so"],
+    srcs: ["arm/*.so"],
 }
 
 filegroup {
     name: "libvtswidevine-arm64-prebuilts",
-    srcs: ["libvtswidevine/arm64/*.so"],
+    srcs: ["arm64/*.so"],
 }
 
 filegroup {
     name: "libvtswidevine-x86-prebuilts",
-    srcs: ["libvtswidevine/x86/*.so"],
+    srcs: ["x86/*.so"],
 }
 
 filegroup {
     name: "libvtswidevine-x86_64-prebuilts",
-    srcs: ["libvtswidevine/x86_64/*.so"],
+    srcs: ["x86_64/*.so"],
 }
