@@ -27,6 +27,7 @@ java_library_host {
     static_libs: [
         "compatibility-tradefed",
     ],
+    visibility: [":__subpackages__"],
 }
 
 tradefed_binary_host {
