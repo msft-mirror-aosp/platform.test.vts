@@ -21,7 +21,6 @@
     <target_preparer class="com.android.tradefed.targetprep.RootTargetPreparer" />
 
     <target_preparer class="com.android.tradefed.targetprep.PushFilePreparer">
-        <option name="cleanup" value="false" />
         <option name="push" value="ufdt_verify_overlay->/data/local/tmp/ufdt_verify_overlay" />
     </target_preparer>
 
