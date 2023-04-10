@@ -18,7 +18,6 @@ package com.android.compatibility.tradefed;
 
 import com.android.compatibility.common.tradefed.loading.CommonConfigLoadingTest;
 import com.android.compatibility.tradefed.VtsCoreTradefedTest;
-import com.android.compatibility.tradefed.util.TargetFileUtilsTest;
 import com.android.tradefed.testtype.suite.module.KernelTestModuleControllerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -33,7 +32,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
         KernelTestModuleControllerTest.class,
-        TargetFileUtilsTest.class,
         VtsCoreTradefedTest.class,
 
         // Loading test
