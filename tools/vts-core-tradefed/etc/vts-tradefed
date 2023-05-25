@@ -56,10 +56,14 @@ if [ -n "${TF_DEBUG}" ]; then
 fi
 
 # get OS
-HOST=`uname`
-if [ "$HOST" == "Linux" ]; then
+HOST=`uname -sm`
+if [ "$HOST" == "Linux x86_64" ]; then
     OS="linux-x86"
-elif [ "$HOST" == "Darwin" ]; then
+elif [ "$HOST" == "Linux aarch64" ]; then
+    OS="linux-arm64"
+    # Bundled java is for linux-x86 so use host JDK on linux-arm64
+    JAVA_BINARY=java
+elif [ "$HOST" == "Darwin x86_64" ]; then
     OS="darwin-x86"
     # Bundled java is for linux so use host JDK on Darwin
     JAVA_BINARY=java
