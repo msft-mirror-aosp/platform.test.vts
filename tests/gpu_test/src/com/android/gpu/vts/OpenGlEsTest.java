@@ -50,6 +50,9 @@ public class OpenGlEsTest extends BaseHostJUnit4Test {
             case Build.TM:
                 requiredOpenGlEsDeqpLevel = VulkanTest.DEQP_LEVEL_FOR_T;
                 break;
+            case Build.UDC:
+                requiredOpenGlEsDeqpLevel = VulkanTest.DEQP_LEVEL_FOR_T;
+                break;
             default:
                 fail("Test should only run for API levels: S, Sv2, T, ...");
                 return;
