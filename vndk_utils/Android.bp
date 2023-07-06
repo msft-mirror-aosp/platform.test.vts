@@ -16,8 +16,9 @@ package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
-python_library_host {
+python_library {
     name: "vndk_utils",
+    host_supported: true,
     pkg_path: "vts/utils/python",
     srcs: [
         "android/__init__.py",
