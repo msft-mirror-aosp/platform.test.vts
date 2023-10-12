@@ -32,6 +32,7 @@ python_test_host {
       "vts_vndk_utils",
     ],
     test_suites: [
+        "general-tests",
         "vts",
     ],
     test_config: "kernel_proc_file_api_test.xml",
