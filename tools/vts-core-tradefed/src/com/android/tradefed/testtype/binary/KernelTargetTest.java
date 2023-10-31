@@ -43,9 +43,6 @@ public class KernelTargetTest extends ExecutableTargetTest {
     private Integer mCurrKver = null;
     private Pattern mKverPattern = Pattern.compile("(\\d+)\\.(\\d+)(?:\\.(\\d+))?");
 
-    @Option(name = "ignore-binary-check", description = "Ignore the binary check in findBinary().")
-    private boolean mIgnoreBinaryCheck = false;
-
     @Option(name = "exit-code-skip", description = "Exit code for skipped tests.")
     private Integer mExitCodeSkip = null;
 
@@ -53,13 +50,6 @@ public class KernelTargetTest extends ExecutableTargetTest {
             description =
                     "The minimum kernel version needed to run a test.  The test name should be the key and the minimum kernel version should be the value.  Should contain at least the kernel version and major revision, and optionally the minor revision, separated by periods, e.g. 5.4 or 4.19.1")
     private Map<String, String> mTestMinKernelVersion = new LinkedHashMap<>();
-
-    @Override
-    public String findBinary(String binary) throws DeviceNotAvailableException {
-        if (mIgnoreBinaryCheck)
-            return binary;
-        return super.findBinary(binary);
-    }
 
     /**
      * Parse the kernel version, major revision, and, optionally, the minimum revision from a
