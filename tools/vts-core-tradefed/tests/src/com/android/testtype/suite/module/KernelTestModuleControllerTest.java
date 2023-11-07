@@ -27,16 +27,13 @@ import com.android.tradefed.invoker.IInvocationContext;
 import com.android.tradefed.invoker.InvocationContext;
 import com.android.tradefed.testtype.suite.ModuleDefinition;
 import com.android.tradefed.testtype.suite.module.IModuleController.RunStrategy;
-import org.easymock.EasyMock;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
 
-/**
- * Unit tests for {@link KernelTestModuleControllerTest}.
- */
+/** Unit tests for {@link KernelTestModuleControllerTest}. */
 @RunWith(JUnit4.class)
 public class KernelTestModuleControllerTest {
     private KernelTestModuleController mController;
@@ -49,21 +46,20 @@ public class KernelTestModuleControllerTest {
     @Before
     public void setUp() {
         mController = new KernelTestModuleController();
-        mMockDevice = EasyMock.createMock(ITestDevice.class);
+        mMockDevice = Mockito.mock(ITestDevice.class);
         mContext = new InvocationContext();
         mContext.addInvocationAttribute(ModuleDefinition.MODULE_NAME, "module1");
         mContext.addAllocatedDevice(ConfigurationDef.DEFAULT_DEVICE_NAME, mMockDevice);
-        mMockIDevice = EasyMock.createMock(IDevice.class);
+        mMockIDevice = Mockito.mock(IDevice.class);
     }
 
     @Test
     public void testModuleAbiMatchesArch()
             throws DeviceNotAvailableException, ConfigurationException {
         mContext.addInvocationAttribute(ModuleDefinition.MODULE_ABI, "arm64-v8a");
-        EasyMock.expect(mMockDevice.getIDevice()).andReturn(mMockIDevice).times(2);
-        EasyMock.expect(mMockDevice.getProperty(mLowMemProp)).andReturn("false");
-        EasyMock.expect(mMockDevice.getProperty(mProductNameProp)).andReturn("product");
-        EasyMock.replay(mMockDevice);
+        Mockito.when(mMockDevice.getIDevice()).thenReturn(mMockIDevice);
+        Mockito.when(mMockDevice.getProperty(mLowMemProp)).thenReturn("false");
+        Mockito.when(mMockDevice.getProperty(mProductNameProp)).thenReturn("product");
         OptionSetter setter = new OptionSetter(mController);
         setter.setOptionValue("arch", "arm64");
         assertEquals(RunStrategy.RUN, mController.shouldRunModule(mContext));
@@ -73,10 +69,9 @@ public class KernelTestModuleControllerTest {
     public void testModuleAbiMismatchesArch()
             throws DeviceNotAvailableException, ConfigurationException {
         mContext.addInvocationAttribute(ModuleDefinition.MODULE_ABI, "arm64-v8a");
-        EasyMock.expect(mMockDevice.getIDevice()).andReturn(mMockIDevice).times(2);
-        EasyMock.expect(mMockDevice.getProperty(mLowMemProp)).andReturn("false");
-        EasyMock.expect(mMockDevice.getProperty(mProductNameProp)).andReturn("product");
-        EasyMock.replay(mMockDevice);
+        Mockito.when(mMockDevice.getIDevice()).thenReturn(mMockIDevice);
+        Mockito.when(mMockDevice.getProperty(mLowMemProp)).thenReturn("false");
+        Mockito.when(mMockDevice.getProperty(mProductNameProp)).thenReturn("product");
         OptionSetter setter = new OptionSetter(mController);
         setter.setOptionValue("arch", "arm");
         assertEquals(RunStrategy.FULL_MODULE_BYPASS, mController.shouldRunModule(mContext));
@@ -86,25 +81,22 @@ public class KernelTestModuleControllerTest {
     public void testDeviceWithLowMemAndIsLowMemFlagTrue()
             throws DeviceNotAvailableException, ConfigurationException {
         mContext.addInvocationAttribute(ModuleDefinition.MODULE_ABI, "arm64-v8a");
-        EasyMock.expect(mMockDevice.getIDevice()).andReturn(mMockIDevice).times(2);
-        EasyMock.expect(mMockDevice.getProperty(mLowMemProp)).andReturn("true");
-        EasyMock.expect(mMockDevice.getProperty(mProductNameProp)).andReturn("product");
-        EasyMock.replay(mMockDevice);
+        Mockito.when(mMockDevice.getIDevice()).thenReturn(mMockIDevice);
+        Mockito.when(mMockDevice.getProperty(mLowMemProp)).thenReturn("true");
+        Mockito.when(mMockDevice.getProperty(mProductNameProp)).thenReturn("product");
         OptionSetter setter = new OptionSetter(mController);
         setter.setOptionValue("arch", "arm64");
         setter.setOptionValue("is-low-mem", "true");
         assertEquals(RunStrategy.RUN, mController.shouldRunModule(mContext));
-        EasyMock.verify(mMockDevice);
     }
 
     @Test
     public void testDeviceWithLowMemButIsLowMemFalse()
             throws DeviceNotAvailableException, ConfigurationException {
         mContext.addInvocationAttribute(ModuleDefinition.MODULE_ABI, "arm64-v8a");
-        EasyMock.expect(mMockDevice.getIDevice()).andReturn(mMockIDevice).times(2);
-        EasyMock.expect(mMockDevice.getProperty(mLowMemProp)).andReturn("true");
-        EasyMock.expect(mMockDevice.getProperty(mProductNameProp)).andReturn("product");
-        EasyMock.replay(mMockDevice);
+        Mockito.when(mMockDevice.getIDevice()).thenReturn(mMockIDevice);
+        Mockito.when(mMockDevice.getProperty(mLowMemProp)).thenReturn("true");
+        Mockito.when(mMockDevice.getProperty(mProductNameProp)).thenReturn("product");
         OptionSetter setter = new OptionSetter(mController);
         setter.setOptionValue("arch", "arm64");
         setter.setOptionValue("is-low-mem", "false");
@@ -115,10 +107,9 @@ public class KernelTestModuleControllerTest {
     public void testDeviceNotLowMemButIsLowMemFlagTrue()
             throws DeviceNotAvailableException, ConfigurationException {
         mContext.addInvocationAttribute(ModuleDefinition.MODULE_ABI, "arm64-v8a");
-        EasyMock.expect(mMockDevice.getIDevice()).andReturn(mMockIDevice).times(2);
-        EasyMock.expect(mMockDevice.getProperty(mLowMemProp)).andReturn("false");
-        EasyMock.expect(mMockDevice.getProperty(mProductNameProp)).andReturn("product_hwasan");
-        EasyMock.replay(mMockDevice);
+        Mockito.when(mMockDevice.getIDevice()).thenReturn(mMockIDevice);
+        Mockito.when(mMockDevice.getProperty(mLowMemProp)).thenReturn("false");
+        Mockito.when(mMockDevice.getProperty(mProductNameProp)).thenReturn("product_hwasan");
         OptionSetter setter = new OptionSetter(mController);
         setter.setOptionValue("arch", "arm64");
         setter.setOptionValue("is-low-mem", "true");
@@ -126,47 +117,41 @@ public class KernelTestModuleControllerTest {
     }
 
     @Test
-    public void testDeviceWithHwasanAndIsHwasanFlagTure()
+    public void testDeviceWithHwasanAndIsHwasanFlagTrue()
             throws DeviceNotAvailableException, ConfigurationException {
         mContext.addInvocationAttribute(ModuleDefinition.MODULE_ABI, "arm64-v8a");
-        EasyMock.expect(mMockDevice.getIDevice()).andReturn(mMockIDevice).times(2);
-        EasyMock.expect(mMockDevice.getProperty(mLowMemProp)).andReturn("false");
-        EasyMock.expect(mMockDevice.getProperty(mProductNameProp)).andReturn("product_hwasan");
-        EasyMock.replay(mMockDevice);
+        Mockito.when(mMockDevice.getIDevice()).thenReturn(mMockIDevice);
+        Mockito.when(mMockDevice.getProperty(mLowMemProp)).thenReturn("false");
+        Mockito.when(mMockDevice.getProperty(mProductNameProp)).thenReturn("product_hwasan");
         OptionSetter setter = new OptionSetter(mController);
         setter.setOptionValue("arch", "arm64");
         setter.setOptionValue("is-hwasan", "true");
         assertEquals(RunStrategy.RUN, mController.shouldRunModule(mContext));
-        EasyMock.verify(mMockDevice);
     }
 
     @Test
     public void testDeviceWithHwasanButIsHwasanFlagFalse()
             throws DeviceNotAvailableException, ConfigurationException {
         mContext.addInvocationAttribute(ModuleDefinition.MODULE_ABI, "arm64-v8a");
-        EasyMock.expect(mMockDevice.getIDevice()).andReturn(mMockIDevice).times(2);
-        EasyMock.expect(mMockDevice.getProperty(mLowMemProp)).andReturn("false");
-        EasyMock.expect(mMockDevice.getProperty(mProductNameProp)).andReturn("product_hwasan");
-        EasyMock.replay(mMockDevice);
+        Mockito.when(mMockDevice.getIDevice()).thenReturn(mMockIDevice);
+        Mockito.when(mMockDevice.getProperty(mLowMemProp)).thenReturn("false");
+        Mockito.when(mMockDevice.getProperty(mProductNameProp)).thenReturn("product_hwasan");
         OptionSetter setter = new OptionSetter(mController);
         setter.setOptionValue("arch", "arm64");
         setter.setOptionValue("is-hwasan", "false");
         assertEquals(RunStrategy.FULL_MODULE_BYPASS, mController.shouldRunModule(mContext));
-        EasyMock.verify(mMockDevice);
     }
 
     @Test
     public void testDeviceNotHwasanButIsHwasanFlagTrue()
             throws DeviceNotAvailableException, ConfigurationException {
         mContext.addInvocationAttribute(ModuleDefinition.MODULE_ABI, "arm64-v8a");
-        EasyMock.expect(mMockDevice.getIDevice()).andReturn(mMockIDevice).times(2);
-        EasyMock.expect(mMockDevice.getProperty(mLowMemProp)).andReturn("false");
-        EasyMock.expect(mMockDevice.getProperty(mProductNameProp)).andReturn("product");
-        EasyMock.replay(mMockDevice);
+        Mockito.when(mMockDevice.getIDevice()).thenReturn(mMockIDevice);
+        Mockito.when(mMockDevice.getProperty(mLowMemProp)).thenReturn("false");
+        Mockito.when(mMockDevice.getProperty(mProductNameProp)).thenReturn("product");
         OptionSetter setter = new OptionSetter(mController);
         setter.setOptionValue("arch", "arm64");
         setter.setOptionValue("is-hwasan", "true");
         assertEquals(RunStrategy.FULL_MODULE_BYPASS, mController.shouldRunModule(mContext));
-        EasyMock.verify(mMockDevice);
     }
 }
