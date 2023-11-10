@@ -44,6 +44,22 @@ def IsVndkRuntimeEnforced(dut):
     return True
 
 
+def IsVndkRequired(dut):
+    """Returns whether the device's vendor partition requires VNDK.
+
+    VNDK libraries are moved from system to vendor partition in V version. If
+    a device does not require VNDK in system, it does not define
+    ro.vndk.version.
+
+    Args:
+        dut: The AndroidDevice under test.
+
+    Returns:
+        A boolean, whether VNDK is required.
+    """
+    return bool(dut.GetVndkVersion())
+
+
 def FormatVndkPath(pattern, bitness, version=""):
     """Formats a VNDK path.
 
