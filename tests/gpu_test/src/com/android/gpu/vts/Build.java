@@ -51,4 +51,5 @@ public class Build {
     public static final int SC_V2 = 32; // provisional
     public static final int TM = 33; // provisional
     public static final int UDC = 34; // provisional
+    public static final int VIC = 35; // provisional
 }
