@@ -87,7 +87,7 @@ public class VulkanTest extends BaseHostJUnit4Test {
     public void checkVulkan1_1Requirements() throws Exception {
         // Only test for new 64-bits devices that is Q and above.
         assumeTrue("Test does not apply for devices released before Q",
-                PropertyUtil.getVendorApiLevel(getDevice()) >= Build.QT);
+                PropertyUtil.getVsrApiLevel(getDevice()) >= Build.QT);
         assumeTrue("Test does not apply for 32-bits devices",
                 getDevice().getProperty("ro.product.cpu.abi").contains("64"));
 
@@ -110,9 +110,9 @@ public class VulkanTest extends BaseHostJUnit4Test {
     @VsrTest(requirements = {"VSR-3.2.1-001.003"})
     @Test
     public void checkVulkan1_3Requirements() throws Exception {
-        // Only test for new 64-bits devices that is Q and above.
+        // Only test for new 64-bits devices that is U and above.
         assumeTrue("Test does not apply for devices released before U",
-                PropertyUtil.getVendorApiLevel(getDevice()) >= Build.UDC);
+                PropertyUtil.getVsrApiLevel(getDevice()) >= Build.UDC);
         assumeTrue("Test does not apply for 32-bits devices",
                 getDevice().getProperty("ro.product.cpu.abi").contains("64"));
 
@@ -137,7 +137,7 @@ public class VulkanTest extends BaseHostJUnit4Test {
     public void checkCpuVulkanRequirements() throws Exception {
         // Only test for new devices that is Q and above.
         assumeTrue("Test does not apply for devices released before Q",
-                PropertyUtil.getVendorApiLevel(getDevice()) >= Build.QT);
+                PropertyUtil.getVsrApiLevel(getDevice()) >= Build.QT);
 
         if (mVulkanDevices.length == 0) {
             return;
