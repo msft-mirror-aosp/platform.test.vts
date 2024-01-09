@@ -33,7 +33,7 @@ bool checkSubstringInCommandOutput(const char* cmd, const char* feature) {
   if (p) {
     char* line = NULL;
     size_t len = 0;
-    __android_log_print(ANDROID_LOG_FATAL, LOG_TAG,
+    __android_log_print(ANDROID_LOG_INFO, LOG_TAG,
                         "checkSubstringInCommandOutput check with cmd: %s",
                         cmd);
     while (getline(&line, &len, p) > 0) {
@@ -45,7 +45,7 @@ bool checkSubstringInCommandOutput(const char* cmd, const char* feature) {
     }
     pclose(p);
   } else {
-    __android_log_print(ANDROID_LOG_FATAL, LOG_TAG, "popen failed: %d", errno);
+    __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, "popen failed: %d", errno);
     _exit(EXIT_FAILURE);
   }
   __android_log_print(ANDROID_LOG_INFO, LOG_TAG, "Feature %s: %ssupported",
