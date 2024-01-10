@@ -55,17 +55,6 @@ else
     exit
 fi
 
-if [ -z ${JAVA_BINARY} ]; then
-      JAVA_BINARY=${VTS_ROOT}/android-vts/jdk/bin/java
-fi;
-
-if [ ! -f "${JAVA_BINARY}" ]; then
-      JAVA_BINARY=java
-fi
-
-checkPath ${JAVA_BINARY}
-checkJavaVersion ${JAVA_BINARY}
-
 # check if in Android build env
 if [ ! -z "${ANDROID_BUILD_TOP}" ]; then
     if [ ! -z "${ANDROID_HOST_OUT}" ]; then
@@ -83,6 +72,17 @@ if [ -z ${VTS_ROOT} ]; then
     # assume we're in an extracted vts install
     VTS_ROOT="$(dirname $(realpath $0))/../.."
 fi;
+
+if [ -z ${JAVA_BINARY} ]; then
+      JAVA_BINARY=${VTS_ROOT}/android-vts/jdk/bin/java
+fi;
+
+if [ ! -f "${JAVA_BINARY}" ]; then
+      JAVA_BINARY=java
+fi
+
+checkPath ${JAVA_BINARY}
+checkJavaVersion ${JAVA_BINARY}
 
 JAR_DIR=${VTS_ROOT}/android-vts/tools
 
