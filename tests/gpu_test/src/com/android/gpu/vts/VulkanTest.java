@@ -175,8 +175,8 @@ public class VulkanTest extends BaseHostJUnit4Test {
      * Verify that FEATURE_VULKAN_DEQP_LEVEL (feature:android.software.vulkan.deqp.level) has a
      * sufficiently high version in relation to the vendor and first product API level.
      */
-    @VsrTest(requirements =
-                     {"VSR-3.2.2-001/VSR-3.2.2-002/VSR-3.2.2-003/VSR-3.2.2-004/VSR-3.2.2-005"})
+    @VsrTest(requirements = {"VSR-3.2.2-001", "VSR-3.2.2-002", "VSR-3.2.2-003", "VSR-3.2.2-004",
+                     "VSR-3.2.2-005", "VSR-3.2.2-006"})
     @Test
     public void
     checkVulkanDeqpLevelIsHighEnough() throws Exception {
