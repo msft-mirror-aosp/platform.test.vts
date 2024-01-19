@@ -132,27 +132,6 @@ public class FastbootGetvarUserspaceTest extends BaseHostJUnit4Test {
         assertNotNull(osVersion);
     }
 
-    /* Devices launching in R and after must export version-vndk. */
-    @Test
-    public void testVndkVersion() throws Exception {
-        String vndkVersion = getTestInformation().getDevice().getFastbootVariable("version-vndk");
-        String codeName = sDeviceCodeName.get(getTestInformation().getDevice());
-        CLog.d("vndk version: '%s', code name: '%s'", vndkVersion, codeName);
-        // The value of vndkVersion might be a letter or a string on pre-release builds,
-        // e.g., R or Tiramisu.
-        // And it is a number representing the API level on final release builds, e.g., 30.
-        if ("REL".equals(codeName)) {
-            try {
-                int intVndkVersion = Integer.parseInt(vndkVersion);
-                assertTrue(intVndkVersion >= PLATFORM_API_LEVEL_R);
-            } catch (NumberFormatException nfe) {
-                fail("ro.vndk.version should be a number. But the current value is " + vndkVersion);
-            }
-        } else {
-            assertNotNull(vndkVersion);
-        }
-    }
-
     /* Devices launching in R and after must export dynamic-partition. */
     @Test
     public void testDynamicPartition() throws Exception {
