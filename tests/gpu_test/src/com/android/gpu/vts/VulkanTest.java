@@ -83,15 +83,15 @@ public class VulkanTest extends BaseHostJUnit4Test {
     }
 
     /**
-     * 64-bits devices released with Q must support Vulkan 1.1.
+     * 64-bit SoCs released with Q must support Vulkan 1.1.
      */
     @VsrTest(requirements = {"VSR-3.2.1-001.001"})
     @Test
     public void checkVulkan1_1Requirements() throws Exception {
-        // Only test for new 64-bits devices that is Q and above.
-        assumeTrue("Test does not apply for devices released before Q",
+        // Only test for new 64-bit SoCs that are Q and above.
+        assumeTrue("Test does not apply for SoCs released before Q",
                 PropertyUtil.getVsrApiLevel(getDevice()) >= Build.QT);
-        assumeTrue("Test does not apply for 32-bits devices",
+        assumeTrue("Test does not apply for 32-bit SoCs",
                 getDevice().getProperty("ro.product.cpu.abi").contains("64"));
 
         assertTrue(mVulkanDevices.length > 0);
@@ -108,16 +108,21 @@ public class VulkanTest extends BaseHostJUnit4Test {
     }
 
     /**
-     * 64-bits devices released with U must support Vulkan 1.3.
+     * 64-bit SoCs released with U must support Vulkan 1.3.
+     * All SoCs released with V must support Vulkan 1.3.
      */
-    @VsrTest(requirements = {"VSR-3.2.1-001.003"})
+    @VsrTest(requirements = {"VSR-3.2.1-001.003", "VSR-3.2.1-007"})
     @Test
     public void checkVulkan1_3Requirements() throws Exception {
-        // Only test for new 64-bits devices that is U and above.
-        assumeTrue("Test does not apply for devices released before U",
+        assumeTrue("Test does not apply for SoCs released before U",
                 PropertyUtil.getVsrApiLevel(getDevice()) >= Build.UDC);
-        assumeTrue("Test does not apply for 32-bits devices",
-                getDevice().getProperty("ro.product.cpu.abi").contains("64"));
+
+        // Don't test if an SoC released during U is 32 bit
+        // If an SoC is released with V then both 32 and 64 bit are to be tested
+        if (PropertyUtil.getVsrApiLevel(getDevice()) == Build.UDC) {
+            assumeTrue("Test does not apply for 32-bit SoCs released with Android U",
+                    getDevice().getProperty("ro.product.cpu.abi").contains("64"));
+        }
 
         assertTrue(mVulkanDevices.length > 0);
 
@@ -133,13 +138,13 @@ public class VulkanTest extends BaseHostJUnit4Test {
     }
 
     /**
-     * Devices with only CPU Vulkan must properly set "ro.cpuvulkan.version" property.
+     * SoCs with only CPU Vulkan must properly set "ro.cpuvulkan.version" property.
      */
     @VsrTest(requirements = {"VSR-3.2.1-002"})
     @Test
     public void checkCpuVulkanRequirements() throws Exception {
-        // Only test for new devices that is Q and above.
-        assumeTrue("Test does not apply for devices released before Q",
+        // Only test for new SoCs that are Q and above.
+        assumeTrue("Test does not apply for SoCs released before Q",
                 PropertyUtil.getVsrApiLevel(getDevice()) >= Build.QT);
 
         if (mVulkanDevices.length == 0) {
@@ -183,7 +188,7 @@ public class VulkanTest extends BaseHostJUnit4Test {
         final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
 
         assumeTrue("Test does not apply for API level lower than R", apiLevel >= Build.RVC);
-        assumeTrue("Test does not apply for devices without Vulkan", mVulkanDevices.length > 0);
+        assumeTrue("Test does not apply for SoCs without Vulkan", mVulkanDevices.length > 0);
 
         // Map from API level to required dEQP level.
         final int requiredVulkanDeqpLevel;
@@ -226,7 +231,7 @@ public class VulkanTest extends BaseHostJUnit4Test {
     }
 
     /**
-     * For devices launching with Android 12 or higher, if the device supports Vulkan 1.1 or higher,
+     * For SoCs launching with Android 12 or higher, if the SoC supports Vulkan 1.1 or higher,
      * VK_EXT_device_memory_report extension must be supported.
      */
     @VsrTest(requirements = {"VSR-3.2.1-006"})
@@ -236,8 +241,8 @@ public class VulkanTest extends BaseHostJUnit4Test {
 
         assumeTrue("Test does not apply for API level lower than S", apiLevel >= Build.SC);
 
-        assumeTrue("Test does not apply for devices without Vulkan support",
-                mVulkanDevices.length > 0);
+        assumeTrue(
+                "Test does not apply for SoCs without Vulkan support", mVulkanDevices.length > 0);
 
         for (int i = 0; i < mVulkanDevices.length; ++i) {
             final JSONObject device = mVulkanDevices[i];
