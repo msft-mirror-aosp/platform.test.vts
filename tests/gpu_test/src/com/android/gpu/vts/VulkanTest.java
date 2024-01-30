@@ -16,6 +16,7 @@
 package com.android.gpu.vts;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
@@ -60,6 +61,10 @@ public class VulkanTest extends BaseHostJUnit4Test {
     private static final String VK_EXT_DEVICE_MEMORY_REPORT_EXTENSION_NAME =
             "VK_EXT_device_memory_report";
     private static final int VK_EXT_DEVICE_MEMORY_REPORT_SPEC_VERSION = 1;
+
+    // the string to parse to confirm that Skia is using vulkan
+    private static final String SKIA_PIPELINE = "Pipeline=Skia";
+    private static final String SKIA_VULKAN_PIPELINE = "Pipeline=Skia (Vulkan)";
 
     private JSONObject[] mVulkanDevices;
 
@@ -264,6 +269,42 @@ public class VulkanTest extends BaseHostJUnit4Test {
 
                 fail(message);
             }
+        }
+    }
+
+    /**
+     * All SoCs released with V must support Skia Vulkan with HWUI
+     */
+    @VsrTest(requirements = {"VSR-3.2.1-009"})
+    @Test
+    public void checkSkiaVulkanSupport() throws Exception {
+        final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
+
+        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VIC);
+
+        final String gfxinfo = getDevice().executeShellCommand("dumpsys gfxinfo");
+        assertNotNull(gfxinfo);
+        assertTrue(gfxinfo.length() > 0);
+
+        int skiaDataIndex = gfxinfo.indexOf(SKIA_PIPELINE);
+        assertTrue("The SoCs adb shell dumpsys gfxinfo must contain a Skia pipeline",
+                skiaDataIndex >= 0);
+
+        String tmpinfo = gfxinfo;
+        while (skiaDataIndex != -1) {
+            // Remove string before next Skia pipeline
+            tmpinfo = tmpinfo.substring(skiaDataIndex);
+
+            // Get the pipeline descriptor line
+            final int newlinecharacter = tmpinfo.indexOf(System.getProperty("line.separator"));
+            String line = tmpinfo.substring(0, newlinecharacter);
+
+            // Confirm that the pipeline uses Vulkan
+            assertTrue("All Skia pipelines must use Vulkan", line.equals(SKIA_VULKAN_PIPELINE));
+
+            // Remove line and find next pipeline
+            tmpinfo = tmpinfo.substring(newlinecharacter + 1);
+            skiaDataIndex = tmpinfo.indexOf(SKIA_PIPELINE);
         }
     }
 
