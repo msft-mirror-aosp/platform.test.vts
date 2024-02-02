@@ -23,6 +23,7 @@ import static org.junit.Assume.assumeTrue;
 
 import android.platform.test.annotations.RequiresDevice;
 import com.android.compatibility.common.util.ApiLevelUtil;
+import com.android.compatibility.common.util.FeatureUtil;
 import com.android.compatibility.common.util.PropertyUtil;
 import com.android.compatibility.common.util.VsrTest;
 import com.android.tradefed.testtype.DeviceJUnit4ClassRunner;
@@ -121,6 +122,9 @@ public class VulkanTest extends BaseHostJUnit4Test {
     public void checkVulkan1_3Requirements() throws Exception {
         assumeTrue("Test does not apply for SoCs released before U",
                 PropertyUtil.getVsrApiLevel(getDevice()) >= Build.UDC);
+        assumeTrue("Test does not apply for automotive devices released before V",
+                !FeatureUtil.isAutomotive(getDevice())
+                        || PropertyUtil.getVsrApiLevel(getDevice()) > Build.UDC);
 
         // Don't test if an SoC released during U is 32 bit
         // If an SoC is released with V then both 32 and 64 bit are to be tested
