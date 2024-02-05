@@ -22,6 +22,7 @@ import static org.junit.Assume.assumeTrue;
 
 import android.platform.test.annotations.RequiresDevice;
 import com.android.compatibility.common.util.ApiLevelUtil;
+import com.android.compatibility.common.util.FeatureUtil;
 import com.android.compatibility.common.util.PropertyUtil;
 import com.android.compatibility.common.util.VsrTest;
 import com.android.tradefed.testtype.DeviceJUnit4ClassRunner;
@@ -113,6 +114,9 @@ public class VulkanTest extends BaseHostJUnit4Test {
         // Only test for new 64-bits devices that is U and above.
         assumeTrue("Test does not apply for devices released before U",
                 PropertyUtil.getVsrApiLevel(getDevice()) >= Build.UDC);
+        assumeTrue("Test does not apply for automotive devices released before V",
+                !FeatureUtil.isAutomotive(getDevice())
+                        || PropertyUtil.getVsrApiLevel(getDevice()) > Build.UDC);
         assumeTrue("Test does not apply for 32-bits devices",
                 getDevice().getProperty("ro.product.cpu.abi").contains("64"));
 
