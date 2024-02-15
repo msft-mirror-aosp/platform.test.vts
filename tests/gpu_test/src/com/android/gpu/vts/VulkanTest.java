@@ -63,6 +63,11 @@ public class VulkanTest extends BaseHostJUnit4Test {
             "VK_EXT_device_memory_report";
     private static final int VK_EXT_DEVICE_MEMORY_REPORT_SPEC_VERSION = 1;
 
+    private static final String VK_EXT_GLOBAL_PRIORITY_EXTENSION_NAME = "VK_EXT_global_priority";
+    private static final int VK_EXT_GLOBAL_PRIORITY_SPEC_VERSION = 1;
+    private static final String VK_KHR_GLOBAL_PRIORITY_EXTENSION_NAME = "VK_KHR_global_priority";
+    private static final int VK_KHR_GLOBAL_PRIORITY_SPEC_VERSION = 1;
+
     // the string to parse to confirm that Skia is using vulkan
     private static final String SKIA_PIPELINE = "Pipeline=Skia";
     private static final String SKIA_VULKAN_PIPELINE = "Pipeline=Skia (Vulkan)";
@@ -309,6 +314,38 @@ public class VulkanTest extends BaseHostJUnit4Test {
             // Remove line and find next pipeline
             tmpinfo = tmpinfo.substring(newlinecharacter + 1);
             skiaDataIndex = tmpinfo.indexOf(SKIA_PIPELINE);
+        }
+    }
+
+    /**
+     * All SoCs released with V must support protectedMemory and VK_EXT_global_priority
+     */
+    @VsrTest(requirements = {"VSR-3.2.1-011"})
+    @Test
+    public void checkProtectedMemoryAndGlobalPrioritySupport() throws Exception {
+        final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
+
+        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VIC);
+
+        assertTrue(mVulkanDevices.length > 0);
+
+        for (JSONObject device : mVulkanDevices) {
+            if (device.getJSONObject("properties").getInt("deviceType")
+                    != VK_PHYSICAL_DEVICE_TYPE_CPU) {
+                continue;
+            }
+
+            final boolean extGlobalPriority = hasExtension(device,
+                    VK_EXT_GLOBAL_PRIORITY_EXTENSION_NAME, VK_EXT_GLOBAL_PRIORITY_SPEC_VERSION);
+            final boolean khrGlobalPriority = hasExtension(device,
+                    VK_KHR_GLOBAL_PRIORITY_EXTENSION_NAME, VK_KHR_GLOBAL_PRIORITY_SPEC_VERSION);
+            assertTrue("All non-cpu Vulkan devices must support global_priority",
+                    extGlobalPriority || khrGlobalPriority);
+
+            final int protectedMemory =
+                    device.getJSONObject("protectedMemoryFeatures").getInt("protectedMemory");
+            assertTrue("All non-cpu Vulkan devices must support protectedMemory",
+                    protectedMemory == 1);
         }
     }
 
