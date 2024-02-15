@@ -16,12 +16,14 @@
 package com.android.gpu.vts;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 
 import android.platform.test.annotations.RequiresDevice;
 import com.android.compatibility.common.util.ApiLevelUtil;
+import com.android.compatibility.common.util.FeatureUtil;
 import com.android.compatibility.common.util.PropertyUtil;
 import com.android.compatibility.common.util.VsrTest;
 import com.android.tradefed.testtype.DeviceJUnit4ClassRunner;
@@ -42,6 +44,9 @@ public class VulkanTest extends BaseHostJUnit4Test {
     private static final int VULKAN_1_1_API_VERSION = 0x401000;
     private static final int VULKAN_1_3_API_VERSION = 0x403000;
 
+    // Feature version corresponding to dEQP level for 2024-03-01.
+    public static final int DEQP_LEVEL_FOR_V = 0x7E80301;
+
     // Feature version corresponding to dEQP level for 2023-03-01.
     public static final int DEQP_LEVEL_FOR_U = 0x7E70301;
 
@@ -57,6 +62,15 @@ public class VulkanTest extends BaseHostJUnit4Test {
     private static final String VK_EXT_DEVICE_MEMORY_REPORT_EXTENSION_NAME =
             "VK_EXT_device_memory_report";
     private static final int VK_EXT_DEVICE_MEMORY_REPORT_SPEC_VERSION = 1;
+
+    private static final String VK_EXT_GLOBAL_PRIORITY_EXTENSION_NAME = "VK_EXT_global_priority";
+    private static final int VK_EXT_GLOBAL_PRIORITY_SPEC_VERSION = 1;
+    private static final String VK_KHR_GLOBAL_PRIORITY_EXTENSION_NAME = "VK_KHR_global_priority";
+    private static final int VK_KHR_GLOBAL_PRIORITY_SPEC_VERSION = 1;
+
+    // the string to parse to confirm that Skia is using vulkan
+    private static final String SKIA_PIPELINE = "Pipeline=Skia";
+    private static final String SKIA_VULKAN_PIPELINE = "Pipeline=Skia (Vulkan)";
 
     private JSONObject[] mVulkanDevices;
 
@@ -80,15 +94,15 @@ public class VulkanTest extends BaseHostJUnit4Test {
     }
 
     /**
-     * 64-bits devices released with Q must support Vulkan 1.1.
+     * 64-bit SoCs released with Q must support Vulkan 1.1.
      */
     @VsrTest(requirements = {"VSR-3.2.1-001.001"})
     @Test
     public void checkVulkan1_1Requirements() throws Exception {
-        // Only test for new 64-bits devices that is Q and above.
-        assumeTrue("Test does not apply for devices released before Q",
-                PropertyUtil.getVendorApiLevel(getDevice()) >= Build.QT);
-        assumeTrue("Test does not apply for 32-bits devices",
+        // Only test for new 64-bit SoCs that are Q and above.
+        assumeTrue("Test does not apply for SoCs released before Q",
+                PropertyUtil.getVsrApiLevel(getDevice()) >= Build.QT);
+        assumeTrue("Test does not apply for 32-bit SoCs",
                 getDevice().getProperty("ro.product.cpu.abi").contains("64"));
 
         assertTrue(mVulkanDevices.length > 0);
@@ -105,16 +119,24 @@ public class VulkanTest extends BaseHostJUnit4Test {
     }
 
     /**
-     * 64-bits devices released with U must support Vulkan 1.3.
+     * 64-bit SoCs released with U must support Vulkan 1.3.
+     * All SoCs released with V must support Vulkan 1.3.
      */
-    @VsrTest(requirements = {"VSR-3.2.1-001.003"})
+    @VsrTest(requirements = {"VSR-3.2.1-001.003", "VSR-3.2.1-007"})
     @Test
     public void checkVulkan1_3Requirements() throws Exception {
-        // Only test for new 64-bits devices that is Q and above.
-        assumeTrue("Test does not apply for devices released before U",
-                PropertyUtil.getVendorApiLevel(getDevice()) >= Build.UDC);
-        assumeTrue("Test does not apply for 32-bits devices",
-                getDevice().getProperty("ro.product.cpu.abi").contains("64"));
+        assumeTrue("Test does not apply for SoCs released before U",
+                PropertyUtil.getVsrApiLevel(getDevice()) >= Build.UDC);
+        assumeTrue("Test does not apply for automotive devices released before V",
+                !FeatureUtil.isAutomotive(getDevice())
+                        || PropertyUtil.getVsrApiLevel(getDevice()) > Build.UDC);
+
+        // Don't test if an SoC released during U is 32 bit
+        // If an SoC is released with V then both 32 and 64 bit are to be tested
+        if (PropertyUtil.getVsrApiLevel(getDevice()) == Build.UDC) {
+            assumeTrue("Test does not apply for 32-bit SoCs released with Android U",
+                    getDevice().getProperty("ro.product.cpu.abi").contains("64"));
+        }
 
         assertTrue(mVulkanDevices.length > 0);
 
@@ -130,14 +152,14 @@ public class VulkanTest extends BaseHostJUnit4Test {
     }
 
     /**
-     * Devices with only CPU Vulkan must properly set "ro.cpuvulkan.version" property.
+     * SoCs with only CPU Vulkan must properly set "ro.cpuvulkan.version" property.
      */
     @VsrTest(requirements = {"VSR-3.2.1-002"})
     @Test
     public void checkCpuVulkanRequirements() throws Exception {
-        // Only test for new devices that is Q and above.
-        assumeTrue("Test does not apply for devices released before Q",
-                PropertyUtil.getVendorApiLevel(getDevice()) >= Build.QT);
+        // Only test for new SoCs that are Q and above.
+        assumeTrue("Test does not apply for SoCs released before Q",
+                PropertyUtil.getVsrApiLevel(getDevice()) >= Build.QT);
 
         if (mVulkanDevices.length == 0) {
             return;
@@ -172,15 +194,15 @@ public class VulkanTest extends BaseHostJUnit4Test {
      * Verify that FEATURE_VULKAN_DEQP_LEVEL (feature:android.software.vulkan.deqp.level) has a
      * sufficiently high version in relation to the vendor and first product API level.
      */
-    @VsrTest(requirements =
-                     {"VSR-3.2.2-001/VSR-3.2.2-002/VSR-3.2.2-003/VSR-3.2.2-004/VSR-3.2.2-005"})
+    @VsrTest(requirements = {"VSR-3.2.2-001", "VSR-3.2.2-002", "VSR-3.2.2-003", "VSR-3.2.2-004",
+                     "VSR-3.2.2-005", "VSR-3.2.2-006"})
     @Test
     public void
     checkVulkanDeqpLevelIsHighEnough() throws Exception {
         final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
 
         assumeTrue("Test does not apply for API level lower than R", apiLevel >= Build.RVC);
-        assumeTrue("Test does not apply for devices without Vulkan", mVulkanDevices.length > 0);
+        assumeTrue("Test does not apply for SoCs without Vulkan", mVulkanDevices.length > 0);
 
         // Map from API level to required dEQP level.
         final int requiredVulkanDeqpLevel;
@@ -198,8 +220,11 @@ public class VulkanTest extends BaseHostJUnit4Test {
             case Build.UDC:
                 requiredVulkanDeqpLevel = DEQP_LEVEL_FOR_U;
                 break;
+            case Build.VIC:
+                requiredVulkanDeqpLevel = DEQP_LEVEL_FOR_V;
+                break;
             default:
-                fail("Test should only run for API levels: R, S, Sv2, TM, UDC, ...");
+                fail("Test should only run for API levels: R, S, Sv2, TM, UDC, VIC...");
                 return;
         }
 
@@ -220,7 +245,7 @@ public class VulkanTest extends BaseHostJUnit4Test {
     }
 
     /**
-     * For devices launching with Android 12 or higher, if the device supports Vulkan 1.1 or higher,
+     * For SoCs launching with Android 12 or higher, if the SoC supports Vulkan 1.1 or higher,
      * VK_EXT_device_memory_report extension must be supported.
      */
     @VsrTest(requirements = {"VSR-3.2.1-006"})
@@ -230,8 +255,8 @@ public class VulkanTest extends BaseHostJUnit4Test {
 
         assumeTrue("Test does not apply for API level lower than S", apiLevel >= Build.SC);
 
-        assumeTrue("Test does not apply for devices without Vulkan support",
-                mVulkanDevices.length > 0);
+        assumeTrue(
+                "Test does not apply for SoCs without Vulkan support", mVulkanDevices.length > 0);
 
         for (int i = 0; i < mVulkanDevices.length; ++i) {
             final JSONObject device = mVulkanDevices[i];
@@ -253,6 +278,74 @@ public class VulkanTest extends BaseHostJUnit4Test {
 
                 fail(message);
             }
+        }
+    }
+
+    /**
+     * All SoCs released with V must support Skia Vulkan with HWUI
+     */
+    @VsrTest(requirements = {"VSR-3.2.1-009"})
+    @Test
+    public void checkSkiaVulkanSupport() throws Exception {
+        final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
+
+        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VIC);
+
+        final String gfxinfo = getDevice().executeShellCommand("dumpsys gfxinfo");
+        assertNotNull(gfxinfo);
+        assertTrue(gfxinfo.length() > 0);
+
+        int skiaDataIndex = gfxinfo.indexOf(SKIA_PIPELINE);
+        assertTrue("The SoCs adb shell dumpsys gfxinfo must contain a Skia pipeline",
+                skiaDataIndex >= 0);
+
+        String tmpinfo = gfxinfo;
+        while (skiaDataIndex != -1) {
+            // Remove string before next Skia pipeline
+            tmpinfo = tmpinfo.substring(skiaDataIndex);
+
+            // Get the pipeline descriptor line
+            final int newlinecharacter = tmpinfo.indexOf(System.getProperty("line.separator"));
+            String line = tmpinfo.substring(0, newlinecharacter);
+
+            // Confirm that the pipeline uses Vulkan
+            assertTrue("All Skia pipelines must use Vulkan", line.equals(SKIA_VULKAN_PIPELINE));
+
+            // Remove line and find next pipeline
+            tmpinfo = tmpinfo.substring(newlinecharacter + 1);
+            skiaDataIndex = tmpinfo.indexOf(SKIA_PIPELINE);
+        }
+    }
+
+    /**
+     * All SoCs released with V must support protectedMemory and VK_EXT_global_priority
+     */
+    @VsrTest(requirements = {"VSR-3.2.1-011"})
+    @Test
+    public void checkProtectedMemoryAndGlobalPrioritySupport() throws Exception {
+        final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
+
+        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VIC);
+
+        assertTrue(mVulkanDevices.length > 0);
+
+        for (JSONObject device : mVulkanDevices) {
+            if (device.getJSONObject("properties").getInt("deviceType")
+                    != VK_PHYSICAL_DEVICE_TYPE_CPU) {
+                continue;
+            }
+
+            final boolean extGlobalPriority = hasExtension(device,
+                    VK_EXT_GLOBAL_PRIORITY_EXTENSION_NAME, VK_EXT_GLOBAL_PRIORITY_SPEC_VERSION);
+            final boolean khrGlobalPriority = hasExtension(device,
+                    VK_KHR_GLOBAL_PRIORITY_EXTENSION_NAME, VK_KHR_GLOBAL_PRIORITY_SPEC_VERSION);
+            assertTrue("All non-cpu Vulkan devices must support global_priority",
+                    extGlobalPriority || khrGlobalPriority);
+
+            final int protectedMemory =
+                    device.getJSONObject("protectedMemoryFeatures").getInt("protectedMemory");
+            assertTrue("All non-cpu Vulkan devices must support protectedMemory",
+                    protectedMemory == 1);
         }
     }
 
