@@ -73,6 +73,7 @@ public class VulkanTest extends BaseHostJUnit4Test {
     private static final String SKIA_VULKAN_PIPELINE = "Pipeline=Skia (Vulkan)";
 
     private JSONObject[] mVulkanDevices;
+    private JSONObject mVulkanProfiles;
 
     /**
      * Test specific setup
@@ -91,6 +92,9 @@ public class VulkanTest extends BaseHostJUnit4Test {
         for (int i = 0; i < vkjson.length(); i++) {
             mVulkanDevices[i] = vkjson.getJSONObject(i);
         }
+
+        final String profiles = getDevice().executeShellCommand("cmd gpu vkprofiles");
+        mVulkanProfiles = new JSONObject(profiles);
     }
 
     /**
@@ -315,6 +319,58 @@ public class VulkanTest extends BaseHostJUnit4Test {
             tmpinfo = tmpinfo.substring(newlinecharacter + 1);
             skiaDataIndex = tmpinfo.indexOf(SKIA_PIPELINE);
         }
+    }
+
+    /**
+     * All SoCs released with V must support ABP 2022
+     */
+    @VsrTest(requirements = {"VSR-3.2.1-008"})
+    @Test
+    public void checkAndroidBaselineProfile2022Support() throws Exception {
+        final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
+
+        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VIC);
+
+        boolean hasOnlyCpuDevice = true;
+        for (JSONObject device : mVulkanDevices) {
+            if (device.getJSONObject("properties").getInt("deviceType")
+                    != VK_PHYSICAL_DEVICE_TYPE_CPU) {
+                hasOnlyCpuDevice = false;
+            }
+        }
+
+        if (hasOnlyCpuDevice) {
+            return;
+        }
+
+        String supported = mVulkanProfiles.getString("VP_ANDROID_baseline_2022");
+        assertEquals("This SoC must support VP_ANDROID_baseline_2022.", "SUPPORTED", supported);
+    }
+
+    /**
+     * All SoCs released with V must support VPA15
+     */
+    @VsrTest(requirements = {"VSR-3.2.1-008"})
+    @Test
+    public void checkVpAndroid15MinimumsSupport() throws Exception {
+        final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
+
+        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VIC);
+
+        boolean hasOnlyCpuDevice = true;
+        for (JSONObject device : mVulkanDevices) {
+            if (device.getJSONObject("properties").getInt("deviceType")
+                    != VK_PHYSICAL_DEVICE_TYPE_CPU) {
+                hasOnlyCpuDevice = false;
+            }
+        }
+
+        if (hasOnlyCpuDevice) {
+            return;
+        }
+
+        String supported = mVulkanProfiles.getString("VP_ANDROID_15_minimums");
+        assertEquals("This SoC must support VP_ANDROID_15_minimums.", "SUPPORTED", supported);
     }
 
     /**
