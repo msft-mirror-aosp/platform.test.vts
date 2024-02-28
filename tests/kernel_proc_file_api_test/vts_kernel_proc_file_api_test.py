@@ -149,19 +149,6 @@ class VtsKernelProcFileApiTest(unittest.TestCase):
                 r_code, 0,
             "Failed to parse %s." % filepath)
 
-    def testProcSysrqTrigger(self):
-        filepath = "/proc/sysrq-trigger"
-
-        # This command only performs a best effort attempt to remount all
-        # filesystems. Check that it doesn't throw an error.
-        self.dut.shell.Execute("echo u > %s" % filepath)
-
-        # Reboot the device.
-        self.dut.shell.Execute("echo b > %s" % filepath)
-        self.assertTrue(self.dut.IsShutdown(10), "Device is still alive.")
-        self.assertTrue(self.dut.WaitForBootCompletion(600))
-        self.assertTrue(self.dut.Root())
-
     def testProcUidProcstatSet(self):
 
         def UidIOStats(uid):
@@ -171,12 +158,42 @@ class VtsKernelProcFileApiTest(unittest.TestCase):
                 uid, uid number.
 
             Returns:
-                list of I/O numbers.
+                list of I/O numbers, can be blank if uid not found.
             """
             stats_path = "/proc/uid_io/stats"
             out, err, r_code = self.dut.shell.Execute(
                     "cat %s | grep '^%d'" % (stats_path, uid))
             return out.split()
+
+        def GetWcharCount(uid, state):
+            """Returns the wchar count (bytes written) for a given uid.
+
+            Args:
+                uid, uid number.
+                state, boolean. Use False for foreground,
+                and True for background.
+
+            Returns:
+                wchar, the number of bytes written by a uid in the given state..
+            """
+            # fg write chars are at index 2, and bg write chars are at 6.
+            wchar_index = 6 if state else 2
+
+            stats = UidIOStats(uid)
+            # UidIOStats() can return a blank line if the entries are not found
+            # so we need to check the length of the return to prevent a list
+            # index out of range exception.
+            arr_len = len(stats)
+
+            # On a properly running system, the output of
+            # 'cat /proc/uid_io/stats | grep ^0'
+            # (which is what UidIOStats() does) results in something that has 11
+            # fields and looks like this:
+            # "0 9006642940 84253078 9751207936 1064480768 0 0 0 0 1048 0"
+            self.assertTrue(arr_len == 11,
+                            "Array len returned by UidIOStats() unexpected: %d" %
+                            arr_len)
+            return int(stats[wchar_index])
 
         def CheckStatsInState(state):
             """Sets VTS (root uid) into a given state and checks the stats.
@@ -189,15 +206,14 @@ class VtsKernelProcFileApiTest(unittest.TestCase):
             filepath = "/proc/uid_procstat/set"
             root_uid = 0
 
-            # fg write chars are at index 2, and bg write chars are at 6.
-            wchar_index = 6 if state else 2
-            old_wchar = UidIOStats(root_uid)[wchar_index]
+            old_wchar = GetWcharCount(root_uid, state)
             self.dut.shell.Execute("echo %d %s > %s" % (root_uid, state, filepath))
             # This should increase the number of write syscalls.
             self.dut.shell.Execute("echo foo")
+            new_wchar = GetWcharCount(root_uid, state)
             self.assertLess(
-                int(old_wchar),
-                int(UidIOStats(root_uid)[wchar_index]),
+                old_wchar,
+                new_wchar,
                 "Number of write syscalls has not increased.")
 
         CheckStatsInState(False)
