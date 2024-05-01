@@ -14,9 +14,28 @@
 // limitations under the License.
 //
 
-
 package {
     default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+python_test_host {
+    name: "vts_kernel_proc_sysrq_trigger_test",
+    main: "vts_kernel_proc_sysrq_trigger_test.py",
+    srcs: [
+        "vts_kernel_proc_sysrq_trigger_test.py",
+        "proc_utils.py",
+    ],
+    libs: [
+        "vts_vndk_utils",
+    ],
+    test_suites: [
+        "general-tests",
+        "vts",
+    ],
+    test_config: "kernel_proc_sysrq_trigger_test.xml",
+    test_options: {
+        unit_test: false,
+    },
 }
 
 python_test_host {
@@ -26,10 +45,10 @@ python_test_host {
         "**/*.py",
     ],
     libs: [
-      "py-parse_type",
-      "py-ply",
-      "vndk_utils",
-      "vts_vndk_utils",
+        "py-parse_type",
+        "py-ply",
+        "vndk_utils",
+        "vts_vndk_utils",
     ],
     test_suites: [
         "vts",
