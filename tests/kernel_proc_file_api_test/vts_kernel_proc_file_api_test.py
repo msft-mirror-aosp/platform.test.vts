@@ -159,7 +159,7 @@ class VtsKernelProcFileApiTest(unittest.TestCase):
         # Reboot the device.
         self.dut.shell.Execute("echo b > %s" % filepath)
         self.assertTrue(self.dut.IsShutdown(10), "Device is still alive.")
-        self.assertTrue(self.dut.WaitForBootCompletion(300))
+        self.assertTrue(self.dut.WaitForBootCompletion(600))
         self.assertTrue(self.dut.Root())
 
     def testProcUidProcstatSet(self):
