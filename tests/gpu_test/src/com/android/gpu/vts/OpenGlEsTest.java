@@ -33,7 +33,7 @@ public class OpenGlEsTest extends BaseHostJUnit4Test {
      * Verify that FEATURE_OPENGLES_DEQP_LEVEL (feature:android.software.opengles.deqp.level) has a
      * sufficiently high version in relation to the vendor and first product API level.
      */
-    @VsrTest(requirements = {"VSR-5.1-001", "VSR-5.1-003"})
+    @VsrTest(requirements = {"VSR-5.1-001", "VSR-5.1-003", "VSR-5.1-004"})
     @Test
     public void checkOpenGlEsDeqpLevelIsHighEnough() throws Exception {
         final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
@@ -53,8 +53,11 @@ public class OpenGlEsTest extends BaseHostJUnit4Test {
             case Build.UDC:
                 requiredOpenGlEsDeqpLevel = VulkanTest.DEQP_LEVEL_FOR_T;
                 break;
+            case Build.VIC:
+                requiredOpenGlEsDeqpLevel = VulkanTest.DEQP_LEVEL_FOR_V;
+                break;
             default:
-                fail("Test should only run for API levels: S, Sv2, T, ...");
+                fail("Test should only run for API levels: S, Sv2, T, UDC, VIC...");
                 return;
         }
 
