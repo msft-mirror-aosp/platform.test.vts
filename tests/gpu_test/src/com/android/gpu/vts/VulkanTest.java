@@ -224,11 +224,11 @@ public class VulkanTest extends BaseHostJUnit4Test {
             case Build.UDC:
                 requiredVulkanDeqpLevel = DEQP_LEVEL_FOR_U;
                 break;
-            case Build.VIC:
+            case Build.VENDOR_24Q2:
                 requiredVulkanDeqpLevel = DEQP_LEVEL_FOR_V;
                 break;
             default:
-                fail("Test should only run for API levels: R, S, Sv2, TM, UDC, VIC...");
+                fail("Test should only run for API levels: R, S, Sv2, TM, UDC, 202404...");
                 return;
         }
 
@@ -291,9 +291,9 @@ public class VulkanTest extends BaseHostJUnit4Test {
     @VsrTest(requirements = {"VSR-3.2.1-009"})
     @Test
     public void checkSkiaVulkanSupport() throws Exception {
-        final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
+        final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
 
-        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VIC);
+        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VENDOR_24Q2);
 
         final String gfxinfo = getDevice().executeShellCommand("dumpsys gfxinfo");
         assertNotNull(gfxinfo);
@@ -327,9 +327,9 @@ public class VulkanTest extends BaseHostJUnit4Test {
     @VsrTest(requirements = {"VSR-3.2.1-008"})
     @Test
     public void checkAndroidBaselineProfile2022Support() throws Exception {
-        final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
+        final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
 
-        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VIC);
+        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VENDOR_24Q2);
 
         boolean hasOnlyCpuDevice = true;
         for (JSONObject device : mVulkanDevices) {
@@ -353,9 +353,9 @@ public class VulkanTest extends BaseHostJUnit4Test {
     @VsrTest(requirements = {"VSR-3.2.1-008"})
     @Test
     public void checkVpAndroid15MinimumsSupport() throws Exception {
-        final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
+        final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
 
-        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VIC);
+        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VENDOR_24Q2);
 
         boolean hasOnlyCpuDevice = true;
         for (JSONObject device : mVulkanDevices) {
@@ -379,9 +379,9 @@ public class VulkanTest extends BaseHostJUnit4Test {
     @VsrTest(requirements = {"VSR-3.2.1-011"})
     @Test
     public void checkProtectedMemoryAndGlobalPrioritySupport() throws Exception {
-        final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
+        final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
 
-        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VIC);
+        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VENDOR_24Q2);
 
         assertTrue(mVulkanDevices.length > 0);
 
