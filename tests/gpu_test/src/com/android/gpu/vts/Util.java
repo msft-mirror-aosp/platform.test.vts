@@ -27,13 +27,12 @@ public class Util {
 
     public static int getVendorApiLevelOrFirstProductApiLevel(final ITestDevice device)
             throws DeviceNotAvailableException {
-        final int vendorApiLevel = PropertyUtil.getVendorApiLevel(device);
-        final int firstProductApiLevel = PropertyUtil.getFirstApiLevel(device);
-
-        LogUtil.CLog.i("Vendor API level: %d", vendorApiLevel);
-        LogUtil.CLog.i("First product API level: %d", firstProductApiLevel);
-
-        return Math.min(vendorApiLevel, firstProductApiLevel);
+        // ro.vendor.api_level already has the minimum of the vendor api level
+        // and the product first api level. It can be read from
+        // PropertyUtil.getVsrApiLevel(device)
+        final int vendorApiLevel = PropertyUtil.getVsrApiLevel(device);
+        LogUtil.CLog.i("ro.vendor.api_level: %d", vendorApiLevel);
+        return vendorApiLevel;
     }
 
     public static boolean isHandheld(final ITestDevice device) throws DeviceNotAvailableException {
