@@ -51,4 +51,6 @@ public class Build {
     public static final int SC_V2 = 32; // provisional
     public static final int TM = 33; // provisional
     public static final int UDC = 34; // provisional
+    // vendor api levels are decoupled from the SDK version in Android VIC
+    public static final int VENDOR_24Q2 = 202404;
 }
