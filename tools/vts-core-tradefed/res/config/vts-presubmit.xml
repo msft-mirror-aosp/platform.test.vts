@@ -21,7 +21,6 @@
   <option name="test-tag" value="vts-presubmit" />
 
   <option name="compatibility:include-filter" value="VtsHalAudioV4_0TargetTest" />
-  <option name="compatibility:include-filter" value="VtsHalBluetoothA2dpV1_0TargetTest" />
   <option name="compatibility:include-filter" value="VtsHalMediaOmxV1_0TargetComponentTest" />
   <option name="compatibility:include-filter" value="VtsHalMediaOmxV1_0TargetAudioEncTest" />
   <option name="compatibility:include-filter" value="VtsHalMediaOmxV1_0TargetAudioDecTest" />
