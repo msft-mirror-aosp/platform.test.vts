@@ -387,7 +387,7 @@ public class VulkanTest extends BaseHostJUnit4Test {
 
         for (JSONObject device : mVulkanDevices) {
             if (device.getJSONObject("properties").getInt("deviceType")
-                    != VK_PHYSICAL_DEVICE_TYPE_CPU) {
+                    == VK_PHYSICAL_DEVICE_TYPE_CPU) {
                 continue;
             }
 
