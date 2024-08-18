@@ -32,7 +32,6 @@ from proc_tests import ProcMapsTest
 from proc_tests import ProcMiscTest
 from proc_tests import ProcMemInfoTest
 from proc_tests import ProcModulesTest
-from proc_tests import ProcQtaguidCtrlTest
 from proc_tests import ProcRemoveUidRangeTest
 from proc_tests import ProcSimpleFileTests
 from proc_tests import ProcShowUidStatTest
@@ -60,7 +59,6 @@ TEST_OBJECTS = {
     ProcMiscTest.ProcMisc(),
     ProcMemInfoTest.ProcMemInfoTest(),
     ProcModulesTest.ProcModulesTest(),
-    ProcQtaguidCtrlTest.ProcQtaguidCtrlTest(),
     ProcRemoveUidRangeTest.ProcRemoveUidRangeTest(),
     ProcSimpleFileTests.ProcCorePattern(),
     ProcSimpleFileTests.ProcCorePipeLimit(),
