@@ -24,13 +24,17 @@ class ProcMisc(KernelProcFileTestBase.KernelProcFileTestBase):
     '''
 
     t_ignore = ' '
+    # t_DRIVERNAME is different from t_STRING in that it
+    # also allowes forward slash, which is sometime present
+    # in the name
+    t_DRIVERNAME = r'[a-zA-Z\(\)_0-9\-/.@]+'
 
     start = 'drivers'
 
     p_drivers = repeat_rule('driver')
 
     def p_line(self, p):
-        'driver : NUMBER STRING NEWLINE'
+        'driver : NUMBER DRIVERNAME NEWLINE'
         p[0] = [p[1], p[2]]
 
     def get_path(self):
