@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
 import android.platform.test.annotations.RequiresDevice;
@@ -330,6 +331,7 @@ public class VulkanTest extends BaseHostJUnit4Test {
         final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
 
         assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VENDOR_24Q2);
+        assumeFalse("Exclude new graphocs requirements for TV", FeatureUtil.isTV(getDevice()));
 
         boolean hasOnlyCpuDevice = true;
         for (JSONObject device : mVulkanDevices) {
@@ -356,6 +358,7 @@ public class VulkanTest extends BaseHostJUnit4Test {
         final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
 
         assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VENDOR_24Q2);
+        assumeFalse("Exclude new graphocs requirements for TV", FeatureUtil.isTV(getDevice()));
 
         boolean hasOnlyCpuDevice = true;
         for (JSONObject device : mVulkanDevices) {
@@ -375,13 +378,15 @@ public class VulkanTest extends BaseHostJUnit4Test {
 
     /**
      * All SoCs released with V must support protectedMemory and VK_EXT_global_priority
+     * ProtectedMemory and VK_EXT_global_priority should be reuqired for Android 16.
      */
     @VsrTest(requirements = {"VSR-3.2.1-011"})
     @Test
     public void checkProtectedMemoryAndGlobalPrioritySupport() throws Exception {
         final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
 
-        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VENDOR_24Q2);
+        assumeTrue("Test does not apply for SoCs launched before W", apiLevel >= Build.VENDOR_25Q2);
+        assumeFalse("Exclude new graphocs requirements for TV", FeatureUtil.isTV(getDevice()));
 
         assertTrue(mVulkanDevices.length > 0);
 
