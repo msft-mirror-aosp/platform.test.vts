@@ -53,4 +53,5 @@ public class Build {
     public static final int UDC = 34; // provisional
     // vendor api levels are decoupled from the SDK version in Android VIC
     public static final int VENDOR_24Q2 = 202404;
+    public static final int VENDOR_25Q2 = 202504;
 }
