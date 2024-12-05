@@ -37,6 +37,7 @@
     <option name="compatibility:exclude-filter" value="vts_kernel_net_tests" />
     <option name="compatibility:exclude-filter" value="vts_kernel_toolchain" />
     <option name="compatibility:exclude-filter" value="vts_kernel_tun_test" />
+    <option name="compatibility:exclude-filter" value="vts_kernelLifetimes_validate_test" />
     <option name="compatibility:exclude-filter" value="vts_libdm_test" />
     <option name="compatibility:exclude-filter" value="vts_libsnapshot_test" />
     <option name="compatibility:exclude-filter" value="vts_linux_kselftest_arm_32" />
