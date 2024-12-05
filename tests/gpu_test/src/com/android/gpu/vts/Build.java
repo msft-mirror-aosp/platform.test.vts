@@ -52,5 +52,7 @@ public class Build {
     public static final int TM = 33; // provisional
     public static final int UDC = 34; // provisional
     // vendor api levels are decoupled from the SDK version in Android VIC
+    // Levels are named after the first platform release to employ them.
     public static final int VENDOR_24Q2 = 202404;
+    public static final int VENDOR_25Q2 = 202504;
 }
