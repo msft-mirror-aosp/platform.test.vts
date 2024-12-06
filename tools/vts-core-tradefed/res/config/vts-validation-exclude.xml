@@ -28,6 +28,7 @@
     <option name="compatibility:exclude-filter" value="vts_compatibilityMatrix_validate_test" />
     <option name="compatibility:exclude-filter" value="vts_core_liblp_test" />
     <option name="compatibility:exclude-filter" value="vts_defaultPermissions_validate_test" />
+    <option name="compatibility:exclude-filter" value="vts_eol_enforcement_test" />
     <option name="compatibility:exclude-filter" value="vts_gsi_boot_test" />
     <option name="compatibility:exclude-filter" value="vts_ibase_test" />
     <option name="compatibility:exclude-filter" value="vts_kernel_checkpoint_test" />
@@ -36,6 +37,7 @@
     <option name="compatibility:exclude-filter" value="vts_kernel_net_tests" />
     <option name="compatibility:exclude-filter" value="vts_kernel_toolchain" />
     <option name="compatibility:exclude-filter" value="vts_kernel_tun_test" />
+    <option name="compatibility:exclude-filter" value="vts_kernelLifetimes_validate_test" />
     <option name="compatibility:exclude-filter" value="vts_libdm_test" />
     <option name="compatibility:exclude-filter" value="vts_libsnapshot_test" />
     <option name="compatibility:exclude-filter" value="vts_linux_kselftest_arm_32" />
