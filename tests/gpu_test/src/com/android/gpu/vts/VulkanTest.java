@@ -45,8 +45,11 @@ public class VulkanTest extends BaseHostJUnit4Test {
     private static final int VULKAN_1_1_API_VERSION = 0x401000;
     private static final int VULKAN_1_3_API_VERSION = 0x403000;
 
+    // Feature version corresponding to dEQP level for 2025-03-01.
+    public static final int DEQP_LEVEL_FOR_VENDOR_25Q2 = 0x7E90301;
+
     // Feature version corresponding to dEQP level for 2024-03-01.
-    public static final int DEQP_LEVEL_FOR_V = 0x7E80301;
+    public static final int DEQP_LEVEL_FOR_VENDOR_24Q2 = 0x7E80301;
 
     // Feature version corresponding to dEQP level for 2023-03-01.
     public static final int DEQP_LEVEL_FOR_U = 0x7E70301;
@@ -226,7 +229,10 @@ public class VulkanTest extends BaseHostJUnit4Test {
                 requiredVulkanDeqpLevel = DEQP_LEVEL_FOR_U;
                 break;
             case Build.VENDOR_24Q2:
-                requiredVulkanDeqpLevel = DEQP_LEVEL_FOR_V;
+                requiredVulkanDeqpLevel = DEQP_LEVEL_FOR_VENDOR_24Q2;
+                break;
+            case Build.VENDOR_25Q2:
+                requiredVulkanDeqpLevel = DEQP_LEVEL_FOR_VENDOR_25Q2;
                 break;
             default:
                 fail("Test should only run for API levels: R, S, Sv2, TM, UDC, 202404...");
