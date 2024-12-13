@@ -692,7 +692,6 @@
     <option name="compatibility:include-filter" value="VtsHalGraphicsMapperStableC_TargetTest PerInstance/GraphicsMapperStableCTests#YV12SubsampleMetadata/0_android_hardware_graphics_allocator_IAllocator_default"/>
     <!-- VtsHalHealthTargetTest -->
     <option name="compatibility:include-filter" value="VtsHalHealthTargetTest Health/BatteryTest#AverageCurrentAgainstChargeStatusFromHal/0_android_hardware_health_IHealth_default"/>
-    <option name="compatibility:include-filter" value="VtsHalHealthTargetTest Health/BatteryTest#ConnectedAgainstStatusInHealthInfo/0_android_hardware_health_IHealth_default"/>
     <option name="compatibility:include-filter" value="VtsHalHealthTargetTest Health/BatteryTest#InstantCurrentAgainstChargeStatusFromHal/0_android_hardware_health_IHealth_default"/>
     <option name="compatibility:include-filter" value="VtsHalHealthTargetTest Health/HealthAidl#getBatteryHealthData/0_android_hardware_health_IHealth_default"/>
     <option name="compatibility:include-filter" value="VtsHalHealthTargetTest Health/HealthAidl#setChargingPolicy/0_android_hardware_health_IHealth_default"/>
@@ -743,7 +742,6 @@
     <option name="compatibility:include-filter" value="VtsHalPowerTargetTest Power/FMQAidl#writeItems/0_android_hardware_power_IPower_default"/>
     <option name="compatibility:include-filter" value="VtsHalPowerTargetTest Power/HintSessionAidl#createAndCloseHintSession/0_android_hardware_power_IPower_default"/>
     <option name="compatibility:include-filter" value="VtsHalPowerTargetTest Power/HintSessionAidl#createHintSessionFailed/0_android_hardware_power_IPower_default"/>
-    <option name="compatibility:include-filter" value="VtsHalPowerTargetTest Power/HintSessionAidl#getSessionConfig/0_android_hardware_power_IPower_default"/>
     <option name="compatibility:include-filter" value="VtsHalPowerTargetTest Power/HintSessionAidl#sendSessionHint/0_android_hardware_power_IPower_default"/>
     <option name="compatibility:include-filter" value="VtsHalPowerTargetTest Power/HintSessionAidl#updateAndReportDurations/0_android_hardware_power_IPower_default"/>
     <option name="compatibility:include-filter" value="VtsHalPowerTargetTest Power/PowerAidl#createHintSessionWithConfig/0_android_hardware_power_IPower_default"/>
@@ -1788,9 +1786,6 @@
     <option name="compatibility:include-filter" value="vts_kernel_proc_file_api_test __main__.VtsKernelProcFileApiTest#test_ProcVmallocInfoTest"/>
     <option name="compatibility:include-filter" value="vts_kernel_proc_file_api_test __main__.VtsKernelProcFileApiTest#test_ProcVmstat"/>
     <option name="compatibility:include-filter" value="vts_kernel_proc_file_api_test __main__.VtsKernelProcFileApiTest#test_ProcZoneInfoTest"/>
-    <!-- vts_libsnapshot_test -->
-    <option name="compatibility:include-filter" value="vts_libsnapshot_test MetadataMountedTest#Recovery"/>
-    <option name="compatibility:include-filter" value="vts_libsnapshot_test SnapshotTest#NoMergeBeforeReboot"/>
     <!-- vts_treble_platform_version_test -->
     <option name="compatibility:include-filter" value="vts_treble_platform_version_test __main__.VtsTreblePlatformVersionTest#testSdkVersion"/>
     <option name="compatibility:include-filter" value="vts_treble_platform_version_test __main__.VtsTreblePlatformVersionTest#testVndkVersion"/>
