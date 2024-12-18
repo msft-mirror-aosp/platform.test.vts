@@ -54,10 +54,17 @@ public class OpenGlEsTest extends BaseHostJUnit4Test {
                 requiredOpenGlEsDeqpLevel = VulkanTest.DEQP_LEVEL_FOR_T;
                 break;
             case Build.VENDOR_24Q2:
-                requiredOpenGlEsDeqpLevel = VulkanTest.DEQP_LEVEL_FOR_V;
+                requiredOpenGlEsDeqpLevel = VulkanTest.DEQP_LEVEL_FOR_VENDOR_24Q2;
+                break;
+            case Build.VENDOR_25Q2:
+                requiredOpenGlEsDeqpLevel = VulkanTest.DEQP_LEVEL_FOR_VENDOR_25Q2;
                 break;
             default:
-                fail("Test should only run for API levels: S, Sv2, T, UDC, 202404...");
+                final String message = String.format("Test should only run for API levels: "
+                                + "S, Sv2, T, UDC, VENDOR_24Q2, VENDOR_25Q2...\n"
+                                + "Actual: %s",
+                        ReflectionUtils.valueName(Build.class, apiLevel));
+                fail(message);
                 return;
         }
 
