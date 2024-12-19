@@ -383,20 +383,56 @@ public class VulkanTest extends BaseHostJUnit4Test {
     }
 
     /**
-     * All SoCs released with V must support protectedMemory and VK_EXT_global_priority
-     * ProtectedMemory and VK_EXT_global_priority should be reuqired for Android 16.
+     * All SoCs starting or restarting GRF with A17 must support protectedMemory.
+     * For A15/A16 produce assumption failure if this requirement is not met instead of failing.
+     * Swiftshader and other CPU-based implementations are exempt due to meaningful implementations
+     * of protected memory being infeasible for them.
      */
     @VsrTest(requirements = {"VSR-3.2.1-011"})
     @Test
-    public void checkProtectedMemoryAndGlobalPrioritySupport() throws Exception {
+    public void checkProtectedMemorySupport() throws Exception {
         final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
 
-        assumeTrue("Test does not apply for SoCs launched before W", apiLevel >= Build.VENDOR_25Q2);
-        assumeFalse("Exclude new graphocs requirements for TV", FeatureUtil.isTV(getDevice()));
+        final boolean allowSoftFailure = apiLevel <= Build.VENDOR_25Q2;
+        assumeFalse("Exclude new graphics requirements for TV", FeatureUtil.isTV(getDevice()));
 
         assertTrue(mVulkanDevices.length > 0);
 
         for (JSONObject device : mVulkanDevices) {
+            // Skip CPU implementations entirely
+            if (device.getJSONObject("properties").getInt("deviceType")
+                    == VK_PHYSICAL_DEVICE_TYPE_CPU) {
+                continue;
+            }
+
+            final int protectedMemory =
+                    device.getJSONObject("protectedMemoryFeatures").getInt("protectedMemory");
+            if (allowSoftFailure)
+                assumeTrue("Chipsets entering GRF before A17 should support protectedMemory",
+                        protectedMemory == 1);
+            else
+                assertTrue("Chipsets starting or restarting GRF with A17 must support protectedMemory",
+                        protectedMemory == 1);
+        }
+    }
+
+    /**
+     * All SoCs starting or restarting GRF with A17 must support VK_EXT_global_priority (or VK_KHR_global_priority).
+     * For A15/A16 produce assumption failure if this requirement is not met instead of failing.
+     * Swiftshader and other CPU-based implementations are exempt.
+     */
+    @VsrTest(requirements = {"VSR-3.2.1-011"})
+    @Test
+    public void checkGlobalPrioritySupport() throws Exception {
+        final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
+
+        final boolean allowSoftFailure = apiLevel <= Build.VENDOR_25Q2;
+        assumeFalse("Exclude new graphics requirements for TV", FeatureUtil.isTV(getDevice()));
+
+        assertTrue(mVulkanDevices.length > 0);
+
+        for (JSONObject device : mVulkanDevices) {
+            // Skip CPU implementations entirely
             if (device.getJSONObject("properties").getInt("deviceType")
                     == VK_PHYSICAL_DEVICE_TYPE_CPU) {
                 continue;
@@ -406,13 +442,12 @@ public class VulkanTest extends BaseHostJUnit4Test {
                     VK_EXT_GLOBAL_PRIORITY_EXTENSION_NAME, VK_EXT_GLOBAL_PRIORITY_SPEC_VERSION);
             final boolean khrGlobalPriority = hasExtension(device,
                     VK_KHR_GLOBAL_PRIORITY_EXTENSION_NAME, VK_KHR_GLOBAL_PRIORITY_SPEC_VERSION);
-            assertTrue("All non-cpu Vulkan devices must support global_priority",
-                    extGlobalPriority || khrGlobalPriority);
-
-            final int protectedMemory =
-                    device.getJSONObject("protectedMemoryFeatures").getInt("protectedMemory");
-            assertTrue("All non-cpu Vulkan devices must support protectedMemory",
-                    protectedMemory == 1);
+            if (allowSoftFailure)
+                assumeTrue("Chipsets entering GRF before A17 should support global_priority",
+                        extGlobalPriority || khrGlobalPriority);
+            else
+                assertTrue("Chipsets starting or restarting GRF with A17 must support global_priority",
+                        extGlobalPriority || khrGlobalPriority);
         }
     }
 
