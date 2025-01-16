@@ -30,6 +30,11 @@ public class Util {
         // ro.vendor.api_level already has the minimum of the vendor api level
         // and the product first api level. It can be read from
         // PropertyUtil.getVsrApiLevel(device)
+        //
+        // TODO: b/390704061
+        // This function is broken for Android 15+ requirements as
+        // ro.product.first_api_level does not take into account GRF end/restarts
+        // so it can return an API level lower than what is actually required.
         final int vendorApiLevel = PropertyUtil.getVsrApiLevel(device);
         LogUtil.CLog.i("ro.vendor.api_level: %d", vendorApiLevel);
         return vendorApiLevel;
