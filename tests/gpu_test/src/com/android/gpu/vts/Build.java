@@ -55,4 +55,5 @@ public class Build {
     // Levels are named after the first platform release to employ them.
     public static final int VENDOR_24Q2 = 202404;
     public static final int VENDOR_25Q2 = 202504;
+    public static final int VENDOR_26Q2 = 202604;
 }
