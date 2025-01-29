@@ -161,7 +161,48 @@ class VtsKernelProcFileApiTest(unittest.TestCase):
             stats_path = "/proc/uid_io/stats"
             out, err, r_code = self.dut.shell.Execute(
                     "cat %s | grep '^%d'" % (stats_path, uid))
+            # On a properly running system, out is a line with 11 fields that
+            # looks like this:
+            # "0 9006642940 84253078 9751207936 1064480768 0 0 0 0 1048 0"
+            # where the stat at each index corresponds to the following:
+            #     0 : uid
+            #     1 : fg_rchar
+            #     2 : fg_wchar
+            #     3 : fg_rbytes
+            #     4 : fg_wbytes
+            #     5 : bg_rchar
+            #     6 : bg_wchar
+            #     7 : bg_rbytes
+            #     8 : bg_wbytes
+            #     9 : fg_fsync
+            #     10: bg_fsync
             return out.split()
+
+        def GetUidIoStat(uid, index):
+            """Returns the I/O stat at the given index for a given uid.
+
+            Args:
+                uid, uid number.
+                index, index of the desired I/O stat in the array.
+
+            Returns:
+                value of the I/O stat at the given index.
+            """
+            stats = UidIOStats(uid)
+            # UidIOStats() can return a blank line if the entries are not found
+            # so we need to check the length of the return to prevent a list
+            # index out of range exception.
+            arr_len = len(stats)
+
+            self.assertTrue(arr_len == 11,
+                            "Array len returned by UidIOStats() unexpected: %d" %
+                            arr_len)
+            self.assertTrue(index < 11,
+                            "Index passed into GetUidIoStat out of bounds: %d" %
+                            index)
+
+            return int(stats[index])
+
 
         def GetWcharCount(uid, state):
             """Returns the wchar count (bytes written) for a given uid.
@@ -172,26 +213,28 @@ class VtsKernelProcFileApiTest(unittest.TestCase):
                 and True for background.
 
             Returns:
-                wchar, the number of bytes written by a uid in the given state..
+                wchar, the number of bytes written by a uid in the given state.
             """
             # fg write chars are at index 2, and bg write chars are at 6.
             wchar_index = 6 if state else 2
 
-            stats = UidIOStats(uid)
-            # UidIOStats() can return a blank line if the entries are not found
-            # so we need to check the length of the return to prevent a list
-            # index out of range exception.
-            arr_len = len(stats)
+            return GetUidIoStat(uid, wchar_index)
 
-            # On a properly running system, the output of
-            # 'cat /proc/uid_io/stats | grep ^0'
-            # (which is what UidIOStats() does) results in something that has 11
-            # fields and looks like this:
-            # "0 9006642940 84253078 9751207936 1064480768 0 0 0 0 1048 0"
-            self.assertTrue(arr_len == 11,
-                            "Array len returned by UidIOStats() unexpected: %d" %
-                            arr_len)
-            return int(stats[wchar_index])
+        def GetFsyncCount(uid, state):
+            """Returns the fsync syscall count by a given uid.
+
+            Args:
+                uid, uid number.
+                state, boolean. Use False for foreground,
+                and True for background.
+
+            Returns:
+                fsync, the number of calls to fsync by a uid in the given state.
+            """
+            # fg write chars are at index 2, and bg write chars are at 6.
+            fsync_index = 10 if state else 9
+
+            return GetUidIoStat(uid, fsync_index)
 
         def CheckStatsInState(state):
             """Sets VTS (root uid) into a given state and checks the stats.
@@ -205,14 +248,26 @@ class VtsKernelProcFileApiTest(unittest.TestCase):
             root_uid = 0
 
             old_wchar = GetWcharCount(root_uid, state)
+            old_fsync = GetFsyncCount(root_uid, state)
             self.dut.shell.Execute("echo %d %s > %s" % (root_uid, state, filepath))
+
             # This should increase the number of write syscalls.
             self.dut.shell.Execute("echo foo")
             new_wchar = GetWcharCount(root_uid, state)
+
+            # This should increase the number of fsync syscalls.
+            self.dut.shell.Execute("fsync /tmp")
+            new_fsync = GetFsyncCount(root_uid, state)
+
             self.assertLess(
                 old_wchar,
                 new_wchar,
                 "Number of write syscalls has not increased.")
+
+            self.assertLess(
+                old_fsync,
+                new_fsync,
+                "Number of fsync syscalls has not increased.")
 
         CheckStatsInState(False)
         CheckStatsInState(True)
