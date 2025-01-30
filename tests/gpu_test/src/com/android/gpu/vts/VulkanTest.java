@@ -371,7 +371,7 @@ public class VulkanTest extends BaseHostJUnit4Test {
         final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
 
         assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VENDOR_24Q2);
-        assumeFalse("Exclude new graphocs requirements for TV", FeatureUtil.isTV(getDevice()));
+        assumeFalse("Exclude new graphics requirements for TV", FeatureUtil.isTV(getDevice()));
 
         boolean hasOnlyCpuDevice = true;
         for (JSONObject device : mVulkanDevices) {
@@ -387,6 +387,33 @@ public class VulkanTest extends BaseHostJUnit4Test {
 
         String supported = mVulkanProfiles.getString("VP_ANDROID_15_minimums");
         assertEquals("This SoC must support VP_ANDROID_15_minimums.", "SUPPORTED", supported);
+    }
+
+    /**
+     * All SoCs starting or restarting GRF with A16 must support VPA16
+     */
+    @VsrTest(requirements = {"VSR-3.2.1-009"})
+    @Test
+    public void checkVpAndroid16MinimumsSupport() throws Exception {
+        final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
+
+        assumeTrue("Test does not apply for SoCs launched before A16", apiLevel >= Build.VENDOR_25Q2);
+        assumeFalse("Exclude new graphics requirements for TV", FeatureUtil.isTV(getDevice()));
+
+        boolean hasOnlyCpuDevice = true;
+        for (JSONObject device : mVulkanDevices) {
+            if (device.getJSONObject("properties").getInt("deviceType")
+                    != VK_PHYSICAL_DEVICE_TYPE_CPU) {
+                hasOnlyCpuDevice = false;
+            }
+        }
+
+        if (hasOnlyCpuDevice) {
+            return;
+        }
+
+        String supported = mVulkanProfiles.getString("VP_ANDROID_16_minimums");
+        assertEquals("This SoC must support VP_ANDROID_16_minimums.", "SUPPORTED", supported);
     }
 
     /**
