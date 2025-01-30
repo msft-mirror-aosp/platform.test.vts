@@ -396,9 +396,14 @@ public class AngleAllowlistTraceTest extends BaseHostJUnit4Test {
     }
 
     private boolean isChipSetMeetingA16Requirement(ITestDevice device) throws Exception {
-        long boardFirstAPILevel = device.getIntProperty("ro.board.first_api_level", 0);
-        long boardAPILevel = device.getIntProperty("ro.board.api_level", 0);
-        return (boardFirstAPILevel >= 202504) || (boardAPILevel >= 202504);
+        long boardFirstAPILevel = getDevice().getIntProperty("ro.board.first_api_level", 0);
+        long boardAPILevel = getDevice().getIntProperty("ro.board.api_level", 0);
+        if (boardAPILevel == 202504) {
+            // See b/390704061 for details.
+            return true;
+        } else {
+            return boardFirstAPILevel <= 32;
+        }
     }
 
     private boolean isVendorAPILevelMeetingA16Requirement(ITestDevice device) throws Exception {
