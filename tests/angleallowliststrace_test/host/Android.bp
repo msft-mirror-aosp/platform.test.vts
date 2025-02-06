@@ -1,4 +1,4 @@
-// Copyright (C) 2019 The Android Open Source Project
+// Copyright (C) 2025 The Android Open Source Project
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,32 +13,21 @@
 // limitations under the License.
 
 package {
+    default_team: "trendy_team_android_gpu",
+    // See: http://go/android-license-faq
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
-java_library_host {
-    name: "vts-core-tradefed-harness",
+java_test_host {
+    name: "AngleAllowlistTraceTest",
     srcs: ["src/**/*.java"],
-    java_resource_dirs: ["res"],
+    test_suites: ["vts"],
     libs: [
-        "tradefed",
         "compatibility-host-util",
-    ],
-    static_libs: [
         "compatibility-tradefed",
+        "tradefed",
     ],
-    visibility: [":__subpackages__"],
-}
-
-tradefed_binary_host {
-    name: "vts-tradefed",
-    wrapper: "etc/vts-tradefed",
-    short_name: "VTS",
-    full_name: "Vendor Test Suite",
-    version: "16_r1",
-    static_libs: [
-        "vts-core-tradefed-harness",
-        "cts-tradefed-harness",
+    device_common_data: [
+        ":VtsAngleTestApp",
     ],
-    required: ["compatibility-host-util"],
 }

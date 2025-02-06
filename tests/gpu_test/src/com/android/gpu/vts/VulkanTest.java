@@ -46,6 +46,9 @@ public class VulkanTest extends BaseHostJUnit4Test {
     private static final int VULKAN_1_3_API_VERSION = 0x403000;
 
     // Feature version corresponding to dEQP level for 2025-03-01.
+    public static final int DEQP_LEVEL_FOR_VENDOR_26Q2 = 0x7E90301;
+
+    // Feature version corresponding to dEQP level for 2025-03-01.
     public static final int DEQP_LEVEL_FOR_VENDOR_25Q2 = 0x7E90301;
 
     // Feature version corresponding to dEQP level for 2024-03-01.
@@ -234,8 +237,12 @@ public class VulkanTest extends BaseHostJUnit4Test {
             case Build.VENDOR_25Q2:
                 requiredVulkanDeqpLevel = DEQP_LEVEL_FOR_VENDOR_25Q2;
                 break;
+            case Build.VENDOR_26Q2:
+                requiredVulkanDeqpLevel = DEQP_LEVEL_FOR_VENDOR_26Q2;
+                break;
             default:
-                fail("Test should only run for API levels: R, S, Sv2, TM, UDC, 202404...");
+                fail("Test should only run for API levels: R, S, Sv2, TM, UDC, 202404, 202504, "
+                        + "202606...");
                 return;
         }
 
@@ -292,15 +299,28 @@ public class VulkanTest extends BaseHostJUnit4Test {
         }
     }
 
+    private boolean mustChipsetMeetA15Requirement() throws Exception {
+        final long boardApiLevel = getDevice().getIntProperty("ro.board.api_level", 0);
+        return boardApiLevel >= Build.VENDOR_24Q2;
+    }
+
+    private boolean mustChipsetMeetA16Requirement() throws Exception {
+        // All SoCs starting or restarting GRF with A16, or not in GRF
+        final long boardFirstApiLevel = getDevice().getIntProperty("ro.board.first_api_level", 0);
+        final long boardApiLevel = getDevice().getIntProperty("ro.board.api_level", 0);
+
+        return boardApiLevel >= Build.VENDOR_25Q2 ||            // Chipsets at A16 level
+            (boardFirstApiLevel <= 32 && boardApiLevel < 34);   // Old chipsets that would need to reenter at A16
+    }
+
     /**
      * All SoCs released with V must support Skia Vulkan with HWUI
      */
     @VsrTest(requirements = {"VSR-3.2.1-009"})
     @Test
     public void checkSkiaVulkanSupport() throws Exception {
-        final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
 
-        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VENDOR_24Q2);
+        assumeTrue(mustChipsetMeetA15Requirement());
 
         final String gfxinfo = getDevice().executeShellCommand("dumpsys gfxinfo");
         assertNotNull(gfxinfo);
@@ -334,10 +354,8 @@ public class VulkanTest extends BaseHostJUnit4Test {
     @VsrTest(requirements = {"VSR-3.2.1-008"})
     @Test
     public void checkAndroidBaselineProfile2022Support() throws Exception {
-        final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
-
-        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VENDOR_24Q2);
-        assumeFalse("Exclude new graphocs requirements for TV", FeatureUtil.isTV(getDevice()));
+        assumeTrue(mustChipsetMeetA15Requirement());
+        assumeFalse("Exclude new graphics requirements for TV", FeatureUtil.isTV(getDevice()));
 
         boolean hasOnlyCpuDevice = true;
         for (JSONObject device : mVulkanDevices) {
@@ -361,10 +379,8 @@ public class VulkanTest extends BaseHostJUnit4Test {
     @VsrTest(requirements = {"VSR-3.2.1-008"})
     @Test
     public void checkVpAndroid15MinimumsSupport() throws Exception {
-        final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
-
-        assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VENDOR_24Q2);
-        assumeFalse("Exclude new graphocs requirements for TV", FeatureUtil.isTV(getDevice()));
+        assumeTrue(mustChipsetMeetA15Requirement());
+        assumeFalse("Exclude new graphics requirements for TV", FeatureUtil.isTV(getDevice()));
 
         boolean hasOnlyCpuDevice = true;
         for (JSONObject device : mVulkanDevices) {
@@ -380,6 +396,31 @@ public class VulkanTest extends BaseHostJUnit4Test {
 
         String supported = mVulkanProfiles.getString("VP_ANDROID_15_minimums");
         assertEquals("This SoC must support VP_ANDROID_15_minimums.", "SUPPORTED", supported);
+    }
+
+    /**
+     * All SoCs starting or restarting GRF with A16 must support VPA16
+     */
+    @VsrTest(requirements = {"VSR-3.2.1-009"})
+    @Test
+    public void checkVpAndroid16MinimumsSupport() throws Exception {
+        assumeTrue(mustChipsetMeetA16Requirement());
+        assumeFalse("Exclude new graphics requirements for TV", FeatureUtil.isTV(getDevice()));
+
+        boolean hasOnlyCpuDevice = true;
+        for (JSONObject device : mVulkanDevices) {
+            if (device.getJSONObject("properties").getInt("deviceType")
+                    != VK_PHYSICAL_DEVICE_TYPE_CPU) {
+                hasOnlyCpuDevice = false;
+            }
+        }
+
+        if (hasOnlyCpuDevice) {
+            return;
+        }
+
+        String supported = mVulkanProfiles.getString("VP_ANDROID_16_minimums");
+        assertEquals("This SoC must support VP_ANDROID_16_minimums.", "SUPPORTED", supported);
     }
 
     /**
