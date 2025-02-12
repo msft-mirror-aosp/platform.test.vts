@@ -327,7 +327,7 @@ public class VulkanTest extends BaseHostJUnit4Test {
     @VsrTest(requirements = {"VSR-3.2.1-008"})
     @Test
     public void checkAndroidBaselineProfile2022Support() throws Exception {
-        final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
+        final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
 
         assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VENDOR_24Q2);
 
@@ -353,7 +353,7 @@ public class VulkanTest extends BaseHostJUnit4Test {
     @VsrTest(requirements = {"VSR-3.2.1-008"})
     @Test
     public void checkVpAndroid15MinimumsSupport() throws Exception {
-        final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
+        final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
 
         assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VENDOR_24Q2);
 
