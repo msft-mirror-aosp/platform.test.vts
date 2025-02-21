@@ -82,10 +82,14 @@ class ProcZoneInfoTest(KernelProcFileTestBase.KernelProcFileTestBase):
             p[0] = p[1]
 
     def p_cpu(self, p):
-        'cpu : CPU COLON NUMBER NEWLINE colonline colonline colonline \
-                VM STATS THRESHOLD COLON NUMBER NEWLINE'
-
-        p[0] = [p[3], p[5], p[6], p[7], [p[10], p[12]]]
+        '''cpu : CPU COLON NUMBER NEWLINE colonline colonline colonline \
+                VM STATS THRESHOLD COLON NUMBER NEWLINE
+                | CPU COLON NUMBER NEWLINE colonline colonline colonline \
+                colonline colonline VM STATS THRESHOLD COLON NUMBER NEWLINE'''
+        if len(p) == 14:
+            p[0] = [p[3], p[5], p[6], p[7], [p[10], p[12]]]
+        else:
+            p[0] = [p[3], p[5], p[6], p[7], p[8], p[9], [p[12], p[14]]]
 
     def p_colonline(self, p):
         'colonline : STRING COLON NUMBER NEWLINE'
