@@ -291,7 +291,7 @@ public class VulkanTest extends BaseHostJUnit4Test {
     @VsrTest(requirements = {"VSR-3.2.1-009"})
     @Test
     public void checkSkiaVulkanSupport() throws Exception {
-        final int apiLevel = PropertyUtil.getVendorApiLevel(getDevice());
+        final int apiLevel = Util.getVendorApiLevelOrFirstProductApiLevel(getDevice());
 
         assumeTrue("Test does not apply for SoCs launched before V", apiLevel >= Build.VENDOR_24Q2);
 
