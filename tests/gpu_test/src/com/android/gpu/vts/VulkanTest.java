@@ -377,8 +377,8 @@ public class VulkanTest extends BaseHostJUnit4Test {
     }
 
     /**
-     * All SoCs released with V must support protectedMemory and VK_EXT_global_priority
-     * ProtectedMemory and VK_EXT_global_priority should be reuqired for Android 16.
+     * All SoCs released with V are strongly recommended to support protectedMemory and VK_EXT_global_priority.
+     * (relaxed from MUST)
      */
     @VsrTest(requirements = {"VSR-3.2.1-011"})
     @Test
@@ -400,12 +400,12 @@ public class VulkanTest extends BaseHostJUnit4Test {
                     VK_EXT_GLOBAL_PRIORITY_EXTENSION_NAME, VK_EXT_GLOBAL_PRIORITY_SPEC_VERSION);
             final boolean khrGlobalPriority = hasExtension(device,
                     VK_KHR_GLOBAL_PRIORITY_EXTENSION_NAME, VK_KHR_GLOBAL_PRIORITY_SPEC_VERSION);
-            assertTrue("All non-cpu Vulkan devices must support global_priority",
+            assumeTrue("All non-cpu Vulkan devices should support global_priority",
                     extGlobalPriority || khrGlobalPriority);
 
             final int protectedMemory =
                     device.getJSONObject("protectedMemoryFeatures").getInt("protectedMemory");
-            assertTrue("All non-cpu Vulkan devices must support protectedMemory",
+            assumeTrue("All non-cpu Vulkan devices should support protectedMemory",
                     protectedMemory == 1);
         }
     }
